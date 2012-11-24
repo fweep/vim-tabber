@@ -40,7 +40,7 @@ Usage
 
 Add this to your .vimrc:
 
-    set tabline=%!fweeptabline#TabLine()
+    set tabline=%!tabline#TabLine()
 
 Labels
 ------
@@ -53,13 +53,33 @@ If you close a tab or otherwise cause the tabs to be renumbered, your label will
 number you specified when setting it.  If I can figure out how to detect a tab closing event, this behavior
 will become configurable.
 
-To set a tab label:
+To set a tab label for tab #2:
 
-    call fweeptabline#SetTabLabel(tabnumber, "Your Label")
+    :TabLineLabel 2 Bug\ #123
 
 To remove a tab label:
 
-    call fweeptabline#ClearTabLabel(tabnumber)
+    :TabLineClean 2
+
+Manipulating Tabs
+-----------------
+
+To create a new tab at the end of the list:
+
+    :TabLineNew
+
+You can specify a label when creating:
+
+    :TabLineNew Refactoring Controller
+
+Functions
+---------
+
+All behavior should be available via commands, but if you'd like, you can call these functions:
+
+    tabline#TabLineNew([label])
+    tabline#TabLineLabel([tab_number], [label])
+    tabline#TabLineClear(tab_number)
 
 License
 -------

@@ -4,7 +4,7 @@
 if exists('g:autoloaded_fweep_tabline') || &cp
   finish
 endif
-let g:autoloaded_fweep_tabline = '0.1'
+let g:autoloaded_fweep_tabline = '0.2.0'
 
 exec 'hi FweepTabLineTabNumber ctermbg=235 ctermfg=33'
 exec 'hi FweepTabLineTabNumberSel ctermbg=239 ctermfg=33'
@@ -20,6 +20,25 @@ exec 'hi FweepTabLineDividerSel ctermbg=235 ctermfg=239'
 exec 'hi FweepTabLineUserLabel ctermfg=173 ctermbg=235'
 exec 'hi FweepTabLineUserLabelSel ctermfg=173 ctermbg=239'
 
+function! s:initialize()
+  command! -nargs=+ TabLineLabel :call tabline#TabLineLabel(<f-args>)
+  command! -nargs=1 TabLineClear :call tabline#TabLabelClear(<f-args>)
+  command! -nargs=? TabLineNew   :call tabline#TabLineNew(<f-args>)
+endfunction
+
+call s:initialize()
+
+"""
+
+function! tabline#TabLineNew(...)
+  let new_tab_number = tabpagenr('$') + 1
+  if a:0 == 1
+    call tabline#TabLineLabel(new_tab_number, a:1)
+  endif
+  execute new_tab_number . 'tabnew'
+  redraw!
+endfunction
+
 function! s:ParseChars(arg)
   "TODO: attribution to powerline
   let arg = a:arg
@@ -30,7 +49,7 @@ function! s:ParseChars(arg)
   return arg
 endfunction
 
-function! fweeptabline#SetTabLabel(tab_number, label)
+function! tabline#TabLineLabel(tab_number, label)
   if !exists("s:fweep_tab_labels")
     let s:fweep_tab_labels = {}
   endif
@@ -38,7 +57,7 @@ function! fweeptabline#SetTabLabel(tab_number, label)
   redraw!
 endfunction
 
-function! fweeptabline#ClearTabLabel(tab_number)
+function! tabline#TabLabelClear(tab_number)
   if exists('s:fweep_tab_labels')
     let removed_tab_label = get(s:fweep_tab_labels, a:tab_number, '***NONEFOUND***')
     if removed_tab_label != '***NONEFOUND***'
@@ -48,7 +67,7 @@ function! fweeptabline#ClearTabLabel(tab_number)
   endif
 endfunction
 
-function! fweeptabline#TabLine()
+function! tabline#TabLine()
   if !exists('s:fweep_tab_labels')
     let s:fweep_tab_labels = {}
   endif
