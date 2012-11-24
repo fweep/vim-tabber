@@ -6,12 +6,12 @@ A Vim plugin styled after Powerline, with additional tab management utilities.
 Author
 ------
 
-Jim Stewart [fweep]
+[Jim Stewart](http://github.com/fweep)
 
 Credits
 -------
 
-Thanks to Kim Silkebækken (kim.silkebaekken+vim@gmail.com) for writing a great plugin!  Much of TabLine's
+Thanks to Kim Silkebækken for writing the excellent Powerline plugin!  Much of TabLine's
 code was copied from or modeled after Powerline.
 
 Features
