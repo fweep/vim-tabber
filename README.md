@@ -1,7 +1,7 @@
 fweep-tabline
 =============
 
-A Vim plugin styled after [Powerline](Localtog/vim-powerline), with additional tab management utilities.
+A Vim plugin styled after [Powerline](Lokaltog/vim-powerline), with additional tab management utilities.
 
 Author
 ------
