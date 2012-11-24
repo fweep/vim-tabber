@@ -21,14 +21,19 @@ exec 'hi FweepTabLineUserLabel ctermfg=173 ctermbg=235'
 exec 'hi FweepTabLineUserLabelSel ctermfg=173 ctermbg=239'
 
 function! s:initialize()
-  command! -nargs=+ TabLineLabel :call tabline#TabLineLabel(<f-args>)
-  command! -nargs=1 TabLineClear :call tabline#TabLabelClear(<f-args>)
-  command! -nargs=? TabLineNew   :call tabline#TabLineNew(<f-args>)
+  command! -nargs=+ TabLineLabel  :call tabline#TabLineLabel(<f-args>)
+  command! -nargs=1 TabLineClear  :call tabline#TabLabelClear(<f-args>)
+  command! -nargs=? TabLineNew    :call tabline#TabLineNew(<f-args>)
+  command! -nargs=1 TabLineSelect :call tabline#TabLineSelect(<f-args>)
 endfunction
 
 call s:initialize()
 
 """
+
+function! tabline#TabLineSelect(tab_number)
+  execute 'tabnext ' . a:tab_number
+endfunction
 
 function! tabline#TabLineNew(...)
   let new_tab_number = tabpagenr('$') + 1
@@ -49,11 +54,16 @@ function! s:ParseChars(arg)
   return arg
 endfunction
 
-function! tabline#TabLineLabel(tab_number, label)
+function! s:set_label(label, tab_number)
   if !exists("s:fweep_tab_labels")
     let s:fweep_tab_labels = {}
   endif
   let s:fweep_tab_labels[a:tab_number] = a:label
+endfunction
+
+function! tabline#TabLineLabel(label, ...)
+  let tab_number = a:0 == 1 ? a:1 : tabpagenr()
+  call s:set_label(a:label, tab_number)
   redraw!
 endfunction
 
