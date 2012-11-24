@@ -6,4 +6,6 @@ if exists('g:loaded_fweep_tabline') || &cp || v:version < 700
 endif
 let g:loaded_fweep_tabline = 1
 
-"FIXME: is this file even needed?
+if !exists('g:tabline_sticky_labels')
+  let g:tabline_sticky_labels = 0
+endif

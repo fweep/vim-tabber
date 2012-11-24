@@ -1,4 +1,4 @@
-" autoload/fweep-tabline.vim
+" autoload/tabline.vim
 " Author: Jim Stewart <http://github.com/fweep/>
 
 if exists('g:autoloaded_fweep_tabline') || &cp
@@ -25,23 +25,106 @@ function! s:initialize()
   command! -nargs=1 TabLineClear  :call tabline#TabLabelClear(<f-args>)
   command! -nargs=? TabLineNew    :call tabline#TabLineNew(<f-args>)
   command! -nargs=1 TabLineSelect :call tabline#TabLineSelect(<f-args>)
+  command! -nargs=? TabLineClose  :call tabline#TabLineClose(<f-args>)
 endfunction
 
 call s:initialize()
 
 """
 
+function! s:error(message)
+  echohl ErrorMsg
+  echomsg a:message
+  echohl None
+  let v:errmsg = a:message
+endfunction
+
+function! s:error_tab_does_not_exist()
+  return s:error('Tab does not exist.')
+endfunction
+
+function! s:number_of_open_tabs()
+  return tabpagenr('$')
+endfunction
+
+function! s:tab_exists(tab_number)
+  return a:tab_number > 0 && a:tab_number <= s:number_of_open_tabs()
+endfunction
+
+function! s:set_label(label, tab_number)
+  if !exists("s:fweep_tab_labels")
+    let s:fweep_tab_labels = {}
+  endif
+  let s:fweep_tab_labels[a:tab_number] = a:label
+endfunction
+
+function! s:remove_label(tab_number)
+  if exists('s:fweep_tab_labels') && has_key(s:fweep_tab_labels, a:tab_number)
+    unlet s:fweep_tab_labels[a:tab_number]
+  endif
+endfunction
+
+function! s:close_tab(tab_number)
+  "FIXME: shift labels left
+  "FIXME: honor g:tabline_sticky_labels
+  call s:remove_label(a:tab_number)
+  execute 'tabclose ' . a:tab_number
+endfunction
+
+function! s:current_tab_number()
+  return tabpagenr()
+endfunction
+
+function! tabline#TabLineClose(...)
+  if a:0
+    let tab_number = a:1
+  else
+    let tab_number = s:current_tab_number()
+  endif
+
+  if tab_number == 1 && s:number_of_open_tabs() == 1
+    call s:error("Cannot close the last tab.")
+  elseif !s:tab_exists(tab_number)
+    call s:error_tab_does_not_exist()
+  else
+    call s:close_tab(tab_number)
+  endif
+endfunction
+
 function! tabline#TabLineSelect(tab_number)
-  execute 'tabnext ' . a:tab_number
+  if !s:tab_exists(tab_number)
+    call s:error_tab_does_not_exist()
+  else
+    execute 'tabnext ' . a:tab_number
+  endif
 endfunction
 
 function! tabline#TabLineNew(...)
-  let new_tab_number = tabpagenr('$') + 1
+  let new_tab_number = s:number_of_open_tabs() + 1
   if a:0 == 1
-    call tabline#TabLineLabel(new_tab_number, a:1)
+    call s:set_label(a:1, new_tab_number)
   endif
   execute new_tab_number . 'tabnew'
   redraw!
+endfunction
+
+function! tabline#TabLineLabel(label, ...)
+  let tab_number = a:0 == 1 ? a:1 : s:current_tab_number()
+  if !s:tab_exists(tab_number)
+    call s:error_tab_does_not_exist()
+  else
+    call s:set_label(a:label, tab_number)
+    redraw!
+  endif
+endfunction
+
+function! tabline#TabLabelClear(tab_number)
+  if !s:tab_exists(tab_number)
+    call s:error_tab_does_not_exist()
+  else
+    call s:remove_label(a:tab_number)
+    redraw!
+  endif
 endfunction
 
 function! s:ParseChars(arg)
@@ -54,29 +137,6 @@ function! s:ParseChars(arg)
   return arg
 endfunction
 
-function! s:set_label(label, tab_number)
-  if !exists("s:fweep_tab_labels")
-    let s:fweep_tab_labels = {}
-  endif
-  let s:fweep_tab_labels[a:tab_number] = a:label
-endfunction
-
-function! tabline#TabLineLabel(label, ...)
-  let tab_number = a:0 == 1 ? a:1 : tabpagenr()
-  call s:set_label(a:label, tab_number)
-  redraw!
-endfunction
-
-function! tabline#TabLabelClear(tab_number)
-  if exists('s:fweep_tab_labels')
-    let removed_tab_label = get(s:fweep_tab_labels, a:tab_number, '***NONEFOUND***')
-    if removed_tab_label != '***NONEFOUND***'
-      let removed = remove(s:fweep_tab_labels, a:tab_number) "unlet s:fweep_tab_labels[a:tab_number]
-      redraw!
-    endif
-  endif
-endfunction
-
 function! tabline#TabLine()
   if !exists('s:fweep_tab_labels')
     let s:fweep_tab_labels = {}
@@ -87,8 +147,8 @@ function! tabline#TabLine()
 
   let s = ''
 
-  let current_tab_number = tabpagenr()
-  let tab_count = tabpagenr('$')
+  let current_tab_number = s:current_tab_number()
+  let tab_count = s:number_of_open_tabs()
 
   for tab_index in range(tab_count)
 
