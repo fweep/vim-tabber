@@ -62,10 +62,15 @@ function! s:number_of_open_tabs()
   return tabpagenr('$')
 endfunction
 
+function! s:create_properties_for_tab_number(new_tab_number)
+  let s:tab_properties[a:new_tab_number] = { 'last_known_tab_number' : a:new_tab_number }
+endfunction
+
 function! s:initialize_tab_labels()
   let s:tab_properties = {}
   for tab_index in range(s:number_of_open_tabs())
     let tab_number = tab_index + 1
+    call s:create_properties_for_tab_number(tab_number)
   endfor
 endfunction
 
@@ -97,20 +102,20 @@ function! s:tab_exists(tab_number)
 endfunction
 
 function! s:set_label(label, tab_number)
-  let s:tab_properties[a:tab_number] = a:label
+  let s:tab_properties[a:tab_number]['label'] = a:label
 endfunction
 
 function! s:label_exists_for_tab_number(tab_number)
-  return exists('s:tab_properties') && has_key(s:tab_properties, a:tab_number)
+  return has_key(s:tab_properties, a:tab_number) && has_key(s:tab_properties[a:tab_number], 'label')
 endfunction
 
 function! s:label_for_tab_number(tab_number)
-  return get(s:tab_properties, a:tab_number)
+  return get(s:tab_properties[a:tab_number], 'label')
 endfunction
 
 function! s:remove_label(tab_number)
   if s:label_exists_for_tab_number(a:tab_number)
-    unlet s:tab_properties[a:tab_number]
+    unlet s:tab_properties[a:tab_number]['label']
   endif
 endfunction
 
@@ -178,7 +183,7 @@ function! tabline#TabLineClose(...)
 endfunction
 
 function! tabline#TabLineSelect(tab_number)
-  if !s:tab_exists(tab_number)
+  if !s:tab_exists(a:tab_number)
     call s:error_tab_does_not_exist()
   else
     call s:select_tab(a:tab_number)
@@ -187,6 +192,7 @@ endfunction
 
 function! tabline#TabLineNew(...)
   let new_tab_number = s:number_of_open_tabs() + 1
+  call s:create_properties_for_tab_number(new_tab_number)
   if a:0 == 1
     call s:set_label(a:1, new_tab_number)
   endif
