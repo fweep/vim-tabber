@@ -25,7 +25,7 @@
 if exists('g:autoloaded_tabline') || &cp
   finish
 endif
-let g:autoloaded_tabline = '0.2.0'
+let g:autoloaded_tabline = '0.3.0'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
