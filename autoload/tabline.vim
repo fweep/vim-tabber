@@ -60,6 +60,7 @@ endfunction
 
 function! s:initialize()
   let s:last_active_tab_number = 1
+  let s:tab_labels = {}
   call s:initialize_commands()
   call s:initialize_highlights()
   call s:initialize_dividers()
@@ -88,14 +89,7 @@ function! s:tab_exists(tab_number)
   return a:tab_number > 0 && a:tab_number <= s:number_of_open_tabs()
 endfunction
 
-function! s:initialize_tab_labels_if_needed()
-  if !exists("s:tab_labels")
-    let s:tab_labels = {}
-  endif
-endfunction
-
 function! s:set_label(label, tab_number)
-  call s:initialize_tab_labels_if_needed()
   let s:tab_labels[a:tab_number] = a:label
 endfunction
 
@@ -213,8 +207,6 @@ function! tabline#TabLabelClear(tab_number)
 endfunction
 
 function! tabline#TabLine()
-  call s:initialize_tab_labels_if_needed()
-
   let s = ''
 
   for tab_index in range(s:number_of_open_tabs())
