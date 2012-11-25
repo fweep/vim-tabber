@@ -58,9 +58,20 @@ function! s:initialize_commands()
   command! -nargs=0 TabLineSelectLastActive :call tabline#TabLineSelectLastActive()
 endfunction
 
+function! s:number_of_open_tabs()
+  return tabpagenr('$')
+endfunction
+
+function! s:initialize_tab_labels()
+  let s:tab_properties = {}
+  for tab_index in range(s:number_of_open_tabs())
+    let tab_number = tab_index + 1
+  endfor
+endfunction
+
 function! s:initialize()
   let s:last_active_tab_number = 1
-  let s:tab_labels = {}
+  call s:initialize_tab_labels()
   call s:initialize_commands()
   call s:initialize_highlights()
   call s:initialize_dividers()
@@ -81,29 +92,25 @@ function! s:error_tab_does_not_exist()
   return s:error('Tab does not exist.')
 endfunction
 
-function! s:number_of_open_tabs()
-  return tabpagenr('$')
-endfunction
-
 function! s:tab_exists(tab_number)
   return a:tab_number > 0 && a:tab_number <= s:number_of_open_tabs()
 endfunction
 
 function! s:set_label(label, tab_number)
-  let s:tab_labels[a:tab_number] = a:label
+  let s:tab_properties[a:tab_number] = a:label
 endfunction
 
 function! s:label_exists_for_tab_number(tab_number)
-  return exists('s:tab_labels') && has_key(s:tab_labels, a:tab_number)
+  return exists('s:tab_properties') && has_key(s:tab_properties, a:tab_number)
 endfunction
 
 function! s:label_for_tab_number(tab_number)
-  return get(s:tab_labels, a:tab_number)
+  return get(s:tab_properties, a:tab_number)
 endfunction
 
 function! s:remove_label(tab_number)
   if s:label_exists_for_tab_number(a:tab_number)
-    unlet s:tab_labels[a:tab_number]
+    unlet s:tab_properties[a:tab_number]
   endif
 endfunction
 
