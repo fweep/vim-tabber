@@ -106,7 +106,7 @@ function! s:set_label(label, tab_number)
 endfunction
 
 function! s:label_exists_for_tab_number(tab_number)
-  return has_key(s:tab_properties, a:tab_number) && has_key(s:tab_properties[a:tab_number], 'label')
+  return has_key(s:tab_properties[a:tab_number], 'label')
 endfunction
 
 function! s:label_for_tab_number(tab_number)
