@@ -25,8 +25,8 @@ Add this to your .vimrc:
 
     set tabline=%!tabline#TabLine()
 
-Labels
-------
+Setting Labels
+--------------
 
 Tab labels default to pathshorten() on the active buffer name.  If the buffer has no name, "\[No Name\]"
 is displayed.  You can override the default label for a tab and set your own.  The tab will use your label
@@ -67,6 +67,22 @@ To move to the last active tab:
 
     :TabLineSelectLastActive
 
+Predefining Labels
+------------------
+
+You can predefine label names that will be used when a matching tab number opens:
+
+    let g:tabline_default_labels = { 1: 'Models', 2: 'Views', 3: 'Controllers' }
+
+If Vim opens with one tab, it will be labeled "Models".  When you open a second tab, it will
+be named "Controllers".  When you open a fourth tab, it will use the normal naming rules.
+
+If the tabs are re-arranged (e.g. by inserting a tab before a labeled one), the label will
+stay with the tab it was originally assigned to.
+
+If a default label is no longer in use&mdash;either because you renamed it, or because the
+tab was closed&mdash;the next tab to open in that slot will be assigned the default label.
+
 Example Bindings
 ----------------
 
@@ -86,7 +102,8 @@ Tested with Vim 7.3.
 Limitations
 -----------
 
-Tab labels are lost when saving/restoring sessions.
+Tab labels are lost when saving/restoring sessions.  If you have configured default labels,
+they will be applied.
 
 Author
 ------

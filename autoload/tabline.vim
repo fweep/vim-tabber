@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabline') || &cp
   finish
 endif
-let g:autoloaded_tabline = '0.4.1'
+let g:autoloaded_tabline = '0.5.0'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -93,11 +93,56 @@ function! s:tab_exists(tab_number) "{{{
 endfunction "}}}
 
 function! s:set_label_for_tab_number(tab_number, label) "{{{
-  call settabvar(a:tab_number, 'tabline_label', a:label)
+  let tabline_settings = s:tabline_settings_for_tab_number(a:tab_number)
+  let tabline_settings.label = a:label
+  unlet tabline_settings['using_default_label_for_tab_number']
+  call s:save_tabline_settings_for_tab_number(a:tab_number, tabline_settings)
+endfunction "}}}
+
+function! s:default_label_in_use_for_tab_number(tab_number) "{{{
+  let in_use = 0
+  for tab_number in range(1, s:last_tab_number())
+    if tab_number == a:tab_number
+      continue
+    endif
+    let tabline_settings = s:tabline_settings_for_tab_number(tab_number)
+    if !empty(tabline_settings)
+      if has_key(tabline_settings, 'using_default_label_for_tab_number')
+        if tabline_settings['using_default_label_for_tab_number'] == a:tab_number
+          let in_use = 1
+          break
+        endif
+      endif
+    endif
+  endfor
+  return in_use
+endfunction "}}}
+
+function! s:tabline_settings_for_tab_number(tab_number) "{{{
+  return gettabvar(a:tab_number, 'tabline_settings')
+endfunction "}}}
+
+function! s:save_tabline_settings_for_tab_number(tab_number, tabline_settings) "{{{
+  call settabvar(a:tab_number, 'tabline_settings', a:tabline_settings)
+endfunction "}}}
+
+function! s:create_tabline_settings_for_tab_number(tab_number) "{{{
+  let tabline_settings = { 'label' : '' }
+  if has_key(g:tabline_default_labels, a:tab_number) && !s:default_label_in_use_for_tab_number(a:tab_number)
+    let tabline_settings.label = g:tabline_default_labels[a:tab_number]
+    let tabline_settings.using_default_label_for_tab_number = a:tab_number
+  endif
+  call s:save_tabline_settings_for_tab_number(a:tab_number, tabline_settings)
+  return tabline_settings
 endfunction "}}}
 
 function! s:label_for_tab_number(tab_number) "{{{
-  return gettabvar(a:tab_number, 'tabline_label')
+  let tabline_settings = s:tabline_settings_for_tab_number(a:tab_number)
+  if empty(tabline_settings)
+    return s:create_tabline_settings_for_tab_number(a:tab_number).label
+  else
+    return tabline_settings.label
+  endif
 endfunction "}}}
 
 function! s:create_tab(new_tab_number) "{{{
@@ -235,8 +280,10 @@ endfunction
 
 function! s:TabLineNew(count, line1, ...) "{{{
   execute s:command_count(a:count, a:line1) . 'tabnew'
+  let tab_number = s:active_tab_number()
+  call s:create_tabline_settings_for_tab_number(tab_number)
   if a:0 == 1
-    call s:set_label_for_tab_number(s:active_tab_number(), a:1)
+    call s:set_label_for_tab_number(tab_number, a:1)
   endif
   redraw!
 endfunction "}}}
