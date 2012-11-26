@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabline') || &cp
   finish
 endif
-let g:autoloaded_tabline = '0.5.1'
+let g:autoloaded_tabline = '0.5.2'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -119,7 +119,7 @@ endfunction "}}}
 function! s:tabline_settings_for_tab_number(tab_number) "{{{
   let tabline_settings = gettabvar(a:tab_number, 'tabline_settings')
   if empty(tabline_settings)
-    return s:create_tabline_settings_for_tab_number(a:tab_number).label
+    return s:create_tabline_settings_for_tab_number(a:tab_number)
   endif
   return tabline_settings
 endfunction "}}}
