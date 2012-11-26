@@ -16,15 +16,17 @@ function! s:initialize_highlights() "{{{
     return
   endif
 
+  execute 'hi FweepTabLine ctermfg=244 ctermbg=235'
+  execute 'hi FweepTabLineSel cterm=reverse ctermfg=239 ctermbg=187'
+  execute 'hi FweepTabLineFill ctermfg=244 ctermbg=235'
+
+  "TODO: derive these from TabLine
   execute 'hi FweepTabLineTabNumber ctermbg=235 ctermfg=33'
   execute 'hi FweepTabLineTabNumberSel ctermbg=239 ctermfg=33'
   execute 'hi FweepTabLineWindowCount ctermbg=235 ctermfg=33'
   execute 'hi FweepTabLineWindowCountSel ctermbg=239 ctermfg=33'
   execute 'hi FweepTabLineModifiedFlag ctermbg=235 ctermfg=red'
   execute 'hi FweepTabLineModifiedFlagSel ctermbg=239 ctermfg=red'
-  execute 'hi FweepTabLine ctermfg=244 ctermbg=235'
-  execute 'hi FweepTabLineSel cterm=reverse ctermfg=239 ctermbg=187'
-  execute 'hi FweepTabLineFill ctermfg=244 ctermbg=235'
   execute 'hi FweepTabLineDivider cterm=reverse ctermfg=239 ctermbg=235'
   execute 'hi FweepTabLineDividerSel ctermbg=235 ctermfg=239'
   execute 'hi FweepTabLineUserLabel ctermfg=173 ctermbg=235'
