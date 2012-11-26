@@ -1,7 +1,9 @@
 fweep-tabline
 =============
 
-A Vim plugin styled after [Powerline](http://github.com/Lokaltog/vim-powerline), with additional tab management utilities.
+A Vim plugin for labeling and manipulating tabs, visually styled after
+[Powerline](http://github.com/Lokaltog/vim-powerline), with additional
+tab management utilities.
 
 Author
 ------
@@ -17,15 +19,10 @@ code was copied from or modeled after Powerline.
 Features
 --------
 
-* Powerline-inspired styling.
+* Powerline-inspired styling and glyphs.
 * User-definable tab labels.
 * Tab numbers and window counts in each tab.
-
-### Pending
-
-* Tab reordering.
-* User-definable highlighting.
-* Status display options.
+* A command for selecting the last active tab.
 
 Installation
 ------------
@@ -34,9 +31,6 @@ Install via [pathogen.vim](https://github.com/tpope/vim-pathogen):
 
     cd ~/.vim/bundle
     git clone git://github.com/fweep/fweep-tabline.git
-
-Usage
------
 
 Add this to your .vimrc:
 
@@ -49,37 +43,58 @@ Tab labels default to pathshorten() on the active buffer name.  If the buffer ha
 is displayed.  You can override the default label for a tab and set your own.  The tab will use your label
 until you clear it or close the tab.
 
-If you close a tab or otherwise cause the tabs to be renumbered, your label will still apply to the tab
-number you specified when setting it.  If I can figure out how to detect a tab closing event, this behavior
-will become configurable.
+To set a tab label for the current tab:
 
-To set a tab label for tab #2:
+    :TabLineLabel My Tab Name
 
-    :TabLineLabel 2 Bug\ #123
+To remove the label from the current tab:
 
-To remove a tab label:
+    :TabLineClear
 
-    :TabLineClean 2
+You can also set/remove labels on other tabs by prefixing the command with the tab number:
 
-Manipulating Tabs
------------------
+    :4TabLineLabel New Name For Tab Four
+    :4TabLineClear
 
-To create a new tab at the end of the list:
+New Tabs
+--------
 
-    :TabLineNew
-
-You can specify a label when creating:
+To create a new tab with a label:
 
     :TabLineNew Refactoring Controller
 
-Functions
----------
+You do not need to escape spaces.
 
-All behavior should be available via commands, but if you'd like, you can call these functions:
+You can supply an optional count prefix to TabLineNew, to specify where the new tab should be opened.
+This behavior is the same as Vim's `tabnew`.  See `:help tabnew`.
 
-    tabline#TabLineNew([label])
-    tabline#TabLineLabel([tab_number], [label])
-    tabline#TabLineClear(tab_number)
+    :TabLineNew New Tab After Current Tab
+    :0TabLineNew New First Tab
+    :2TabLineNew New Third Tab
+    :999TabLineNew New Last Tab
+
+Last Active Tab
+---------------
+
+To move to the last active tab:
+
+    :TabLineSelectLastActive
+
+Example Bindings
+----------------
+
+Bind <C-t>n to open a new tab at the end of the tab list with the label "Scratch":
+
+    nnoremap <C-t>n :999TabLineNew Scratch<CR>
+
+Bind <C-t><C-t> to switch to the last active tab:
+
+    nnoremap <C-t><C-t> :TabLineSelectLastActive<CR>
+
+Compatibility
+-------------
+
+Tested with Vim 7.3.
 
 License
 -------

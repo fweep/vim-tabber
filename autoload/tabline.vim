@@ -16,19 +16,19 @@ function! s:initialize_highlights() "{{{
     return
   endif
 
-  exec 'hi FweepTabLineTabNumber ctermbg=235 ctermfg=33'
-  exec 'hi FweepTabLineTabNumberSel ctermbg=239 ctermfg=33'
-  exec 'hi FweepTabLineWindowCount ctermbg=235 ctermfg=33'
-  exec 'hi FweepTabLineWindowCountSel ctermbg=239 ctermfg=33'
-  exec 'hi FweepTabLineModifiedFlag ctermbg=235 ctermfg=red'
-  exec 'hi FweepTabLineModifiedFlagSel ctermbg=239 ctermfg=red'
-  exec 'hi FweepTabLine ctermfg=244 ctermbg=235'
-  exec 'hi FweepTabLineSel cterm=reverse ctermfg=239 ctermbg=187'
-  exec 'hi FweepTabLineFill ctermfg=244 ctermbg=235'
-  exec 'hi FweepTabLineDivider cterm=reverse ctermfg=239 ctermbg=235'
-  exec 'hi FweepTabLineDividerSel ctermbg=235 ctermfg=239'
-  exec 'hi FweepTabLineUserLabel ctermfg=173 ctermbg=235'
-  exec 'hi FweepTabLineUserLabelSel ctermfg=173 ctermbg=239'
+  execute 'hi FweepTabLineTabNumber ctermbg=235 ctermfg=33'
+  execute 'hi FweepTabLineTabNumberSel ctermbg=239 ctermfg=33'
+  execute 'hi FweepTabLineWindowCount ctermbg=235 ctermfg=33'
+  execute 'hi FweepTabLineWindowCountSel ctermbg=239 ctermfg=33'
+  execute 'hi FweepTabLineModifiedFlag ctermbg=235 ctermfg=red'
+  execute 'hi FweepTabLineModifiedFlagSel ctermbg=239 ctermfg=red'
+  execute 'hi FweepTabLine ctermfg=244 ctermbg=235'
+  execute 'hi FweepTabLineSel cterm=reverse ctermfg=239 ctermbg=187'
+  execute 'hi FweepTabLineFill ctermfg=244 ctermbg=235'
+  execute 'hi FweepTabLineDivider cterm=reverse ctermfg=239 ctermbg=235'
+  execute 'hi FweepTabLineDividerSel ctermbg=235 ctermfg=239'
+  execute 'hi FweepTabLineUserLabel ctermfg=173 ctermbg=235'
+  execute 'hi FweepTabLineUserLabelSel ctermfg=173 ctermbg=239'
 endfunction "}}}
 
 function! s:initialize_dividers() "{{{
@@ -42,9 +42,9 @@ function! s:initialize_commands() "{{{
     return
   endif
 
-  command! -nargs=+ TabLineLabel            :call <SID>TabLineLabel(<f-args>)
-  command! -nargs=? TabLineClear            :call <SID>TabLineLabel('', <f-args>)
-  command! -nargs=? TabLineNew              :call <SID>TabLineNew(<f-args>)
+  command! -range=0 -nargs=1 TabLineLabel   :call <SID>TabLineLabel(<count>, <line1>, <f-args>)
+  command! -range=0 -nargs=0 TabLineClear   :call <SID>TabLineLabel(<count>, <line1>, '')
+  command! -range=0 -nargs=? TabLineNew     :call <SID>TabLineNew(<count>, <line1>, <f-args>)
   command! -nargs=0 TabLineSelectLastActive :call <SID>TabLineSelectLastActive()
 endfunction "}}}
 
@@ -125,11 +125,11 @@ function! s:ParseChars(arg) "{{{
   return arg
 endfunction "}}}
 
-function! s:highlighted_text(highlight_name, text, is_active_tab)
+function! s:highlighted_text(highlight_name, text, is_active_tab) "{{{
   return '%#' . a:highlight_name . (a:is_active_tab ? 'Sel' : '') . '#' . a:text
-endfunction
+endfunction "}}}
 
-function! s:window_count_for_tab_number(tab_number, is_active_tab)
+function! s:window_count_for_tab_number(tab_number, is_active_tab) "{{{
   let number_of_windows_in_tab = tabpagewinnr(a:tab_number, '$')
   if number_of_windows_in_tab > 1
     let text = ':' . s:highlighted_text('FweepTabLineWindowCount', number_of_windows_in_tab, a:is_active_tab)
@@ -137,7 +137,7 @@ function! s:window_count_for_tab_number(tab_number, is_active_tab)
     let text = ''
   endif
   return text
-endfunction
+endfunction "}}}
 
 " }}}
 
@@ -157,8 +157,7 @@ function! tabline#TabLine() "{{{
     let tabline .= s:highlighted_text('FweepTabLineTabNumber', ' ' . tab_number, is_active_tab) . tab_highlight
     let tabline .= s:window_count_for_tab_number(tab_number, is_active_tab) . tab_highlight
 
-    "TODO: maybe refactor this to another method, but don't want to load
-    "buffer list twice..
+    "TODO: maybe refactor this to another method, but don't want to load buffer list twice..
     let tab_contains_modified_buffers = 0
     let tab_buffer_list = tabpagebuflist(tab_number)
     for buffer_number in tab_buffer_list
@@ -215,20 +214,29 @@ function! s:TabLineSelectLastActive() "{{{
   endif
 endfunction "}}}
 
-function! s:TabLineNew(...) "{{{
-  "TODO: figure out how to get count and use that as prefix to :tabnew
-  let new_tab_number = s:last_tab_number() + 1
-  " call s:create_tab(new_tab_number)
-  execute 'tabnew'
+function! s:command_count(count, line1)
+  let command_count = ''
+  if a:count == a:line1
+    if a:count == 0
+      let command_count = '0'
+    else
+      let command_count = a:line1
+    endif
+  endif
+  return command_count
+endfunction
+
+function! s:TabLineNew(count, line1, ...) "{{{
+  execute s:command_count(a:count, a:line1) . 'tabnew'
   if a:0 == 1
-    " call s:set_label_for_tab_number(new_tab_number, a:1)
     call s:set_label_for_tab_number(s:active_tab_number(), a:1)
   endif
-  redraw! "TODO: might not need this
+  redraw!
 endfunction "}}}
 
-function! s:TabLineLabel(label, ...) "{{{
-  let tab_number = a:0 == 1 ? a:1 : s:active_tab_number()
+function! s:TabLineLabel(count, line1, label) "{{{
+  let command_count = s:command_count(a:count, a:line1)
+  let tab_number = empty(command_count) ? s:active_tab_number() : command_count
   if !s:tab_exists(tab_number)
     call s:error_tab_does_not_exist()
   else
