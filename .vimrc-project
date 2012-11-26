@@ -1,0 +1,1 @@
+let g:tabline_default_labels = { 1: 'TabLine' }
