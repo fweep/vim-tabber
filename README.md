@@ -1,4 +1,4 @@
-fweep-tabline
+vim-tabber
 =============
 
 A Vim plugin for labeling and manipulating tabs, visually styled after
@@ -20,11 +20,11 @@ Installation
 Install via [pathogen.vim](https://github.com/tpope/vim-pathogen):
 
     cd ~/.vim/bundle
-    git clone git://github.com/fweep/fweep-tabline.git
+    git clone git://github.com/fweep/vim-tabber.git
 
 Add this to your .vimrc:
 
-    set tabline=%!tabline#TabLine()
+    set tabline=%!tabber#TabLine()
 
 Setting Labels
 --------------
@@ -35,45 +35,45 @@ until you clear it or close the tab.
 
 To set a label for the current tab:
 
-    :TabLineLabel My Tab Name
+    :TabberLabel My Tab Name
 
 To remove the label from the current tab:
 
-    :TabLineClear
+    :TabberClear
 
 You can also set/remove labels on other tabs by prefixing the command with the tab number:
 
-    :4TabLineLabel New Name For Tab Four
-    :4TabLineClear
+    :4TabberLabel New Name For Tab Four
+    :4TabberClear
 
 New Tabs
 --------
 
 To create a new tab with a label:
 
-    :TabLineNew Refactoring Controller
+    :TabberNew Refactoring Controller
 
-You can supply an optional count prefix to TabLineNew, to specify where the new tab should be opened.
+You can supply an optional count prefix to TabberNew, to specify where the new tab should be opened.
 This behavior is the same as Vim's `:tabnew`.  See `:help tabnew`.
 
-    :TabLineNew New Tab After Current Tab
-    :0TabLineNew New First Tab
-    :2TabLineNew New Third Tab
-    :999TabLineNew New Last Tab
+    :TabberNew New Tab After Current Tab
+    :0TabberNew New First Tab
+    :2TabberNew New Third Tab
+    :999TabberNew New Last Tab
 
 Last Active Tab
 ---------------
 
 To move to the last active tab:
 
-    :TabLineSelectLastActive
+    :TabberSelectLastActive
 
 Predefining Labels
 ------------------
 
 You can predefine label names that will be used when a matching tab number opens:
 
-    let g:tabline_predefined_labels = { 1: 'Models', 2: 'Views', 3: 'Controllers' }
+    let g:tabber_predefined_labels = { 1: 'Models', 2: 'Views', 3: 'Controllers' }
 
 If Vim opens with one tab, it will be labeled "Models".  When you open a second tab, it will
 be named "Controllers".  When you open a fourth tab, it will use the normal naming rules.
@@ -87,16 +87,16 @@ tab was closed&mdash;the next tab to open in that slot will be assigned the defa
 Default Labels
 --------------
 
-You can set a default label for tabs created with `:TabLineNew`:
+You can set a default label for tabs created with `:TabberNew`:
 
-    set g:tabline_default_user_label = 'Scratch'
+    set g:tabber_default_user_label = 'Scratch'
 
 You can set a default label for new tabs that are created without a label:
 
-    set g:tabline_default_unknown_label = 'Temp'
+    set g:tabber_default_unknown_label = 'Temp'
 
 This will apply to tabs created by `:tabnew`, by other plugins, etc.  It will apply
-to labels created by `:TabLineNew` if `g:tabline_default_user_label` is not set.
+to labels created by `:TabberNew` if `g:tabber_default_user_label` is not set.
 
 Predefined labels always take precedence over these options.
 
@@ -105,11 +105,11 @@ Example Bindings
 
 Bind \<C-t\> to open a new tab at the end of the tab list with the label "Scratch":
 
-    nnoremap <C-t> :999TabLineNew Scratch<CR>
+    nnoremap <C-t> :999TabberNew Scratch<CR>
 
 Bind \<C-e\> to switch to the last active tab:
 
-    nnoremap <C-e> :TabLineSelectLastActive<CR>
+    nnoremap <C-e> :TabberSelectLastActive<CR>
 
 Compatibility
 -------------
@@ -130,8 +130,9 @@ Author
 Credits
 -------
 
-Thanks to Kim Silkebækken for writing the excellent Powerline plugin!  Much of TabLine's
-code was copied from or modeled after Powerline.
+Thanks to Kim Silkebækken for writing the excellent Powerline plugin!  Some of Tabber's
+code was copied from or modeled after Powerline.  Thanks also to Tim Pope and others for
+providing great code from which to learn Vimscript.
 
 License
 -------
