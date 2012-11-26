@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabline') || &cp
   finish
 endif
-let g:autoloaded_tabline = '0.4.0'
+let g:autoloaded_tabline = '0.4.1'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -65,10 +65,6 @@ endfunction "}}}
 
 function! s:active_tab_number() "{{{
   return tabpagenr()
-endfunction "}}}
-
-function! s:first_tabnumber() "{{{
-  return 1
 endfunction "}}}
 
 function! s:save_active_tab_number() "{{{
@@ -209,8 +205,7 @@ function! s:TabLineSelectLastActive() "{{{
   if s:tab_exists(s:last_active_tab_number())
     call s:select_tab(s:last_active_tab_number())
   else
-    call s:error('Last active tab no longer exists; selecting tab 1.')
-    call s:select_tab(s:first_tab())
+    call s:select_tab(1)
   endif
 endfunction "}}}
 

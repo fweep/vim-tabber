@@ -5,17 +5,6 @@ A Vim plugin for labeling and manipulating tabs, visually styled after
 [Powerline](http://github.com/Lokaltog/vim-powerline), with additional
 tab management utilities.
 
-Author
-------
-
-[Jim Stewart](http://github.com/fweep)
-
-Credits
--------
-
-Thanks to Kim Silkebækken for writing the excellent Powerline plugin!  Much of TabLine's
-code was copied from or modeled after Powerline.
-
 Features
 --------
 
@@ -43,7 +32,7 @@ Tab labels default to pathshorten() on the active buffer name.  If the buffer ha
 is displayed.  You can override the default label for a tab and set your own.  The tab will use your label
 until you clear it or close the tab.
 
-To set a tab label for the current tab:
+To set a label for the current tab:
 
     :TabLineLabel My Tab Name
 
@@ -63,10 +52,8 @@ To create a new tab with a label:
 
     :TabLineNew Refactoring Controller
 
-You do not need to escape spaces.
-
 You can supply an optional count prefix to TabLineNew, to specify where the new tab should be opened.
-This behavior is the same as Vim's `tabnew`.  See `:help tabnew`.
+This behavior is the same as Vim's `:tabnew`.  See `:help tabnew`.
 
     :TabLineNew New Tab After Current Tab
     :0TabLineNew New First Tab
@@ -83,18 +70,29 @@ To move to the last active tab:
 Example Bindings
 ----------------
 
-Bind <C-t>n to open a new tab at the end of the tab list with the label "Scratch":
+Bind \<C-t\> to open a new tab at the end of the tab list with the label "Scratch":
 
-    nnoremap <C-t>n :999TabLineNew Scratch<CR>
+    nnoremap <C-t> :999TabLineNew Scratch<CR>
 
-Bind <C-t><C-t> to switch to the last active tab:
+Bind \<C-e\> to switch to the last active tab:
 
-    nnoremap <C-t><C-t> :TabLineSelectLastActive<CR>
+    nnoremap <C-e> :TabLineSelectLastActive<CR>
 
 Compatibility
 -------------
 
 Tested with Vim 7.3.
+
+Author
+------
+
+[Jim Stewart](http://github.com/fweep)
+
+Credits
+-------
+
+Thanks to Kim Silkebækken for writing the excellent Powerline plugin!  Much of TabLine's
+code was copied from or modeled after Powerline.
 
 License
 -------
