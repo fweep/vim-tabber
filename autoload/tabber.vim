@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabber') || &cp
   finish
 endif
-let g:autoloaded_tabber = '0.5.4'
+let g:autoloaded_tabber = '0.5.5'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -56,7 +56,7 @@ function! s:initialize_commands() "{{{
     return
   endif
 
-  command! -range=0 -nargs=1 TabberLabel   :call <SID>TabberLabel(<count>, <line1>, <f-args>)
+  command! -range=0 -nargs=? TabberLabel   :call <SID>TabberLabel(<count>, <line1>, <f-args>)
   command! -range=0 -nargs=0 TabberClear   :call <SID>TabberLabel(<count>, <line1>, '')
   command! -range=0 -nargs=? TabberNew     :call <SID>TabberNew(<count>, <line1>, <f-args>)
   command! -nargs=0 TabberSelectLastActive :call <SID>TabberSelectLastActive()
@@ -333,13 +333,20 @@ function! s:TabberNew(count, line1, ...) "{{{
   redraw!
 endfunction "}}}
 
-function! s:TabberLabel(count, line1, label) "{{{
+function! s:TabberLabel(count, line1, ...) "{{{
   let command_count = s:command_count(a:count, a:line1)
   let tab = empty(command_count) ? s:active_tab() : command_count
   if !s:tab_exists(tab)
     call s:error_tab_does_not_exist()
   else
-    call s:set_label_for_tab(tab, a:label)
+    if a:0 == 1
+      let new_tab_label = a:1
+    else
+      let new_tab_label = s:prompt_user_for_label(tab)
+    endif
+    if !empty(new_tab_label)
+      call s:set_label_for_tab(tab, new_tab_label)
+    endif
     redraw!
   endif
 endfunction "}}}

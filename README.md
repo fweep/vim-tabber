@@ -103,7 +103,7 @@ Predefined labels always take precedence over these options.
 Other Options
 -------------
 
-Prompt for a label if `:TabLineNew` is called with no arguments, and no defaults apply:
+Prompt for a label if `:TabberNew` or `:TabberLabel` is called with no arguments, and no defaults apply:
 
     let g:tabber_prompt_for_new_label = 1
 
