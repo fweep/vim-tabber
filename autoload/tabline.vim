@@ -35,6 +35,16 @@ function! s:initialize_highlights() "{{{
   execute 'highlight TabLineDefaultLabelSel ctermfg=143 ctermbg=239'
 endfunction "}}}
 
+function! s:ParseChars(arg) "{{{
+  "Copied from Powerline.
+  let arg = a:arg
+  if type(arg) == type([])
+    call map(arg, 'nr2char(v:val)')
+    return join(arg, '')
+  endif
+  return arg
+endfunction "}}}
+
 function! s:initialize_dividers() "{{{
   let s:divider_characters = [ [0x2b80], [0x2b81], [0x2b82], [0x2b83] ]
   let s:divider_character_hard = s:ParseChars(deepcopy(s:divider_characters[0]))
@@ -63,36 +73,7 @@ endfunction "}}}
 
 " Script Utility Functions {{{
 
-function! s:last_tab_number() "{{{
-  return tabpagenr('$')
-endfunction "}}}
-
-function! s:active_tab_number() "{{{
-  return tabpagenr()
-endfunction "}}}
-
-function! s:save_active_tab_number() "{{{
-  let s:last_active_tab_number = s:active_tab_number()
-endfunction "}}}
-
-function! s:last_active_tab_number() "{{{
-  return s:last_active_tab_number
-endfunction "}}}
-
-function! s:error(message) "{{{
-  echohl ErrorMsg
-  echomsg a:message
-  echohl None
-  let v:errmsg = a:message
-endfunction "}}}
-
-function! s:error_tab_does_not_exist() "{{{
-  return s:error('Tab does not exist.')
-endfunction "}}}
-
-function! s:tab_exists(tab_number) "{{{
-  return a:tab_number > 0 && a:tab_number <= s:last_tab_number()
-endfunction "}}}
+" Tab Settings {{{
 
 function! s:set_label_for_tab_number(tab_number, label) "{{{
   let tabline_settings = s:tabline_settings_for_tab_number(a:tab_number)
@@ -142,6 +123,47 @@ function! s:label_for_tab_number(tab_number) "{{{
   return s:tabline_settings_for_tab_number(a:tab_number)['label']
 endfunction "}}}
 
+" }}}
+
+" Error Handling {{{
+
+function! s:error(message) "{{{
+  echohl ErrorMsg
+  echomsg a:message
+  echohl None
+  let v:errmsg = a:message
+endfunction "}}}
+
+function! s:error_tab_does_not_exist() "{{{
+  return s:error('Tab does not exist.')
+endfunction "}}}
+
+" }}}
+
+" Tab Arrangement {{{
+
+function! s:last_tab_number() "{{{
+  return tabpagenr('$')
+endfunction "}}}
+
+function! s:active_tab_number() "{{{
+  return tabpagenr()
+endfunction "}}}
+
+function! s:tab_exists(tab_number) "{{{
+  return a:tab_number > 0 && a:tab_number <= s:last_tab_number()
+endfunction "}}}
+
+function! s:save_active_tab_number() "{{{
+  let s:last_active_tab_number = s:active_tab_number()
+endfunction "}}}
+
+function! s:last_active_tab_number() "{{{
+  return s:last_active_tab_number
+endfunction "}}}
+
+" }}}
+
 function! s:create_tab(new_tab_number) "{{{
   execute a:new_tab_number . 'tabnew'
 endfunction "}}}
@@ -151,18 +173,10 @@ function! s:select_tab(tab_number) "{{{
   execute 'tabnext ' . a:tab_number
 endfunction "}}}
 
+" Tabline() Helpers {{{
+
 function! s:mouse_handle_for_tab_number(tab_number) "{{{
   return '%' . a:tab_number . 'T'
-endfunction "}}}
-
-function! s:ParseChars(arg) "{{{
-  "Copied from Powerline.
-  let arg = a:arg
-  if type(arg) == type([])
-    call map(arg, 'nr2char(v:val)')
-    return join(arg, '')
-  endif
-  return arg
 endfunction "}}}
 
 function! s:highlighted_text(highlight_name, text, is_active_tab) "{{{
@@ -192,7 +206,7 @@ function! s:tab_contains_modified_buffers(tab_number) "{{{
   return tab_contains_modified_buffers
 endfunction "}}}
 
-function! s:normal_label_for_tab_number(tab_number)
+function! s:normal_label_for_tab_number(tab_number) "{{{
   let tab_buffer_list = tabpagebuflist(a:tab_number)
   let window_number = tabpagewinnr(a:tab_number)
   let active_window_buffer_name = bufname(tab_buffer_list[window_number - 1])
@@ -202,7 +216,54 @@ function! s:normal_label_for_tab_number(tab_number)
     let label = '[No Name]'
   endif
   return label
-endfunction
+endfunction "}}}
+
+" }}}
+
+" Command Handlers {{{
+
+function! s:command_count(count, line1) "{{{
+  let command_count = ''
+  if a:count == a:line1
+    if a:count == 0
+      let command_count = '0'
+    else
+      let command_count = a:line1
+    endif
+  endif
+  return command_count
+endfunction "}}}
+
+function! s:TabLineSelectLastActive() "{{{
+  if s:tab_exists(s:last_active_tab_number())
+    call s:select_tab(s:last_active_tab_number())
+  else
+    call s:select_tab(1)
+  endif
+endfunction "}}}
+
+function! s:TabLineNew(count, line1, ...) "{{{
+  execute s:command_count(a:count, a:line1) . 'tabnew'
+  let tab_number = s:active_tab_number()
+  call s:create_tabline_settings_for_tab_number(tab_number)
+  if a:0 == 1
+    call s:set_label_for_tab_number(tab_number, a:1)
+  endif
+  redraw!
+endfunction "}}}
+
+function! s:TabLineLabel(count, line1, label) "{{{
+  let command_count = s:command_count(a:count, a:line1)
+  let tab_number = empty(command_count) ? s:active_tab_number() : command_count
+  if !s:tab_exists(tab_number)
+    call s:error_tab_does_not_exist()
+  else
+    call s:set_label_for_tab_number(tab_number, a:label)
+    redraw!
+  endif
+endfunction "}}}
+
+" }}}
 
 " }}}
 
@@ -258,47 +319,6 @@ function! tabline#TabLine() "{{{
 
   return tabline
 
-endfunction "}}}
-
-function! s:TabLineSelectLastActive() "{{{
-  if s:tab_exists(s:last_active_tab_number())
-    call s:select_tab(s:last_active_tab_number())
-  else
-    call s:select_tab(1)
-  endif
-endfunction "}}}
-
-function! s:command_count(count, line1)
-  let command_count = ''
-  if a:count == a:line1
-    if a:count == 0
-      let command_count = '0'
-    else
-      let command_count = a:line1
-    endif
-  endif
-  return command_count
-endfunction
-
-function! s:TabLineNew(count, line1, ...) "{{{
-  execute s:command_count(a:count, a:line1) . 'tabnew'
-  let tab_number = s:active_tab_number()
-  call s:create_tabline_settings_for_tab_number(tab_number)
-  if a:0 == 1
-    call s:set_label_for_tab_number(tab_number, a:1)
-  endif
-  redraw!
-endfunction "}}}
-
-function! s:TabLineLabel(count, line1, label) "{{{
-  let command_count = s:command_count(a:count, a:line1)
-  let tab_number = empty(command_count) ? s:active_tab_number() : command_count
-  if !s:tab_exists(tab_number)
-    call s:error_tab_does_not_exist()
-  else
-    call s:set_label_for_tab_number(tab_number, a:label)
-    redraw!
-  endif
 endfunction "}}}
 
 " }}}

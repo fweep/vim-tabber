@@ -6,6 +6,11 @@ if exists('g:loaded_fweep_tabline') || &cp || v:version < 700
 endif
 let g:loaded_fweep_tabline = 1
 
-if !exists('g:tabline_sticky_labels')
-  let g:tabline_sticky_labels = 0
-endif
+function! s:SetOptDefault(opt, val)
+  "Taken from Tim Pope's rails.vim.
+  if !exists("g:tabline_" . a:opt)
+    let g:{a:opt} = a:val
+  endif
+endfunction
+
+call s:SetOptDefault('default_labels', {})
