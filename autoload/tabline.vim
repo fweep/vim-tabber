@@ -12,7 +12,7 @@ let g:autoloaded_tabline = '0.5.3'
 " Initialization (Commands, Highlighting, Bindings) {{{
 
 function! s:initialize_highlights() "{{{
-  if exists('g:tablist_suppress_highlights') && g:tablist_suppress_highlights
+  if exists('g:tabline_suppress_highlights') && g:tabline_suppress_highlights
     return
   endif
 
@@ -52,7 +52,7 @@ function! s:initialize_dividers() "{{{
 endfunction "}}}
 
 function! s:initialize_commands() "{{{
-  if exists('g:tablist_suppress_commands') && g:tablist_suppress_commands
+  if exists('g:tabline_suppress_commands') && g:tabline_suppress_commands
     return
   endif
 
@@ -306,9 +306,15 @@ endfunction "}}}
 function! s:TabLineNew(count, line1, ...) "{{{
   execute s:command_count(a:count, a:line1) . 'tabnew'
   let tab_number = s:active_tab_number()
-  call s:create_tabline_settings_for_tab_number(tab_number)
+  let tabline_settings = s:create_tabline_settings_for_tab_number(tab_number)
+  let new_tab_label = ''
   if a:0 == 1
-    call s:set_label_for_tab_number(tab_number, a:1)
+    let new_tab_label = a:1
+  elseif tabline_settings.tab_number_of_default_label != tab_number && exists('g:tabline_default_user_label')
+    let new_tab_label = g:tabline_default_user_label
+  endif
+  if !empty(new_tab_label)
+    call s:set_label_for_tab_number(tab_number, new_tab_label)
   endif
   redraw!
 endfunction "}}}

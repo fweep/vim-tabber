@@ -87,11 +87,18 @@ tab was closed&mdash;the next tab to open in that slot will be assigned the defa
 Default Labels
 --------------
 
+You can set a default label for tabs created with `:TabLineNew`:
+
+    set g:tabline_default_user_label = 'Scratch'
+
 You can set a default label for new tabs that are created without a label:
 
     set g:tabline_default_unknown_label = 'Temp'
 
-This will apply to tabs created by `:tabnew`, by other plugins, etc.
+This will apply to tabs created by `:tabnew`, by other plugins, etc.  It will apply
+to labels created by `:TabLineNew` if `g:tabline_default_user_label` is not set.
+
+Predefined labels always take precedence over these options.
 
 Example Bindings
 ----------------
