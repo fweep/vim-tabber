@@ -16,21 +16,21 @@ function! s:initialize_highlights() "{{{
     return
   endif
 
-  execute 'hi FweepTabLine ctermfg=244 ctermbg=235'
-  execute 'hi FweepTabLineSel cterm=reverse ctermfg=239 ctermbg=187'
-  execute 'hi FweepTabLineFill ctermfg=244 ctermbg=235'
+  execute 'highlight TabLine cterm=NONE ctermfg=244 ctermbg=235'
+  execute 'highlight TabLineSel cterm=reverse ctermfg=239 ctermbg=187'
+  execute 'highlight TabLineFill cterm=NONE ctermfg=244 ctermbg=235'
 
   "TODO: derive these from TabLine
-  execute 'hi FweepTabLineTabNumber ctermbg=235 ctermfg=33'
-  execute 'hi FweepTabLineTabNumberSel ctermbg=239 ctermfg=33'
-  execute 'hi FweepTabLineWindowCount ctermbg=235 ctermfg=33'
-  execute 'hi FweepTabLineWindowCountSel ctermbg=239 ctermfg=33'
-  execute 'hi FweepTabLineModifiedFlag ctermbg=235 ctermfg=red'
-  execute 'hi FweepTabLineModifiedFlagSel ctermbg=239 ctermfg=red'
-  execute 'hi FweepTabLineDivider cterm=reverse ctermfg=239 ctermbg=235'
-  execute 'hi FweepTabLineDividerSel ctermbg=235 ctermfg=239'
-  execute 'hi FweepTabLineUserLabel ctermfg=173 ctermbg=235'
-  execute 'hi FweepTabLineUserLabelSel ctermfg=173 ctermbg=239'
+  execute 'highlight TabLineTabNumber ctermbg=235 ctermfg=33'
+  execute 'highlight TabLineTabNumberSel ctermbg=239 ctermfg=33'
+  execute 'highlight TabLineWindowCount ctermbg=235 ctermfg=33'
+  execute 'highlight TabLineWindowCountSel ctermbg=239 ctermfg=33'
+  execute 'highlight TabLineModifiedFlag ctermbg=235 ctermfg=red'
+  execute 'highlight TabLineModifiedFlagSel ctermbg=239 ctermfg=red'
+  execute 'highlight TabLineDivider cterm=reverse ctermfg=239 ctermbg=235'
+  execute 'highlight TabLineDividerSel ctermbg=235 ctermfg=239'
+  execute 'highlight TabLineUserLabel ctermfg=173 ctermbg=235'
+  execute 'highlight TabLineUserLabelSel ctermfg=173 ctermbg=239'
 endfunction "}}}
 
 function! s:initialize_dividers() "{{{
@@ -130,7 +130,7 @@ endfunction "}}}
 function! s:window_count_for_tab_number(tab_number, is_active_tab) "{{{
   let number_of_windows_in_tab = tabpagewinnr(a:tab_number, '$')
   if number_of_windows_in_tab > 1
-    let text = ':' . s:highlighted_text('FweepTabLineWindowCount', number_of_windows_in_tab, a:is_active_tab)
+    let text = ':' . s:highlighted_text('TabLineWindowCount', number_of_windows_in_tab, a:is_active_tab)
   else
     let text = ''
   endif
@@ -173,21 +173,21 @@ function! tabline#TabLine() "{{{
   for tab_number in range(1, s:last_tab_number())
 
     let is_active_tab = tab_number == s:active_tab_number()
-    let tab_highlight = s:highlighted_text('FweepTabLine', '', is_active_tab)
+    let tab_highlight = s:highlighted_text('TabLine', '', is_active_tab)
 
     let tabline .= tab_highlight
     let tabline .= s:mouse_handle_for_tab_number(tab_number)
-    let tabline .= s:highlighted_text('FweepTabLineTabNumber', ' ' . tab_number, is_active_tab) . tab_highlight
+    let tabline .= s:highlighted_text('TabLineTabNumber', ' ' . tab_number, is_active_tab) . tab_highlight
     let tabline .= s:window_count_for_tab_number(tab_number, is_active_tab) . tab_highlight
 
     if s:tab_contains_modified_buffers(tab_number)
-      let tabline .= ' ' . s:highlighted_text('FweepTabLineModifiedFlag', '+', is_active_tab) . tab_highlight
+      let tabline .= ' ' . s:highlighted_text('TabLineModifiedFlag', '+', is_active_tab) . tab_highlight
     endif
 
     let user_label = s:label_for_tab_number(tab_number)
 
     if !empty(user_label)
-      let tab_label = s:highlighted_text('FweepTabLineUserLabel', user_label, is_active_tab) . tab_highlight
+      let tab_label = s:highlighted_text('TabLineUserLabel', user_label, is_active_tab) . tab_highlight
     else
       let tab_label = s:default_label_for_tab_number(tab_number)
     endif
@@ -195,18 +195,18 @@ function! tabline#TabLine() "{{{
     let tabline .= ' ' . tab_label . ' '
 
     if ((s:active_tab_number() == tab_number) || (s:active_tab_number() == (tab_number + 1)))
-      let tabline .= s:highlighted_text('FweepTabLineDivider', s:divider_character_hard, is_active_tab)
+      let tabline .= s:highlighted_text('TabLineDivider', s:divider_character_hard, is_active_tab)
     elseif tab_number != s:last_tab_number()
       let tabline .= s:divider_character_soft
     endif
 
   endfor
 
-  let tabline .= '%#FweepTabLineFill#%T'
+  let tabline .= '%#TabLineFill#%T'
 
   if s:last_tab_number() > 1
     let tabline .= '%='
-    let tabline .= '%#FweepTabLine#%999Xclose'
+    let tabline .= '%#TabLine#%999Xclose'
   endif
 
   return tabline
