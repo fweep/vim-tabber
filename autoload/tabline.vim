@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabline') || &cp
   finish
 endif
-let g:autoloaded_tabline = '0.3.0'
+let g:autoloaded_tabline = '0.4.0'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -42,10 +42,10 @@ function! s:initialize_commands() "{{{
     return
   endif
 
-  command! -nargs=+ TabLineLabel            :call tabline#TabLineLabel(<f-args>)
-  command! -nargs=? TabLineClear            :call tabline#TabLineLabel('', <f-args>)
-  command! -nargs=? TabLineNew              :call tabline#TabLineNew(<f-args>)
-  command! -nargs=0 TabLineSelectLastActive :call tabline#TabLineSelectLastActive()
+  command! -nargs=+ TabLineLabel            :call <SID>TabLineLabel(<f-args>)
+  command! -nargs=? TabLineClear            :call <SID>TabLineLabel('', <f-args>)
+  command! -nargs=? TabLineNew              :call <SID>TabLineNew(<f-args>)
+  command! -nargs=0 TabLineSelectLastActive :call <SID>TabLineSelectLastActive()
 endfunction "}}}
 
 function! s:initialize() "{{{
@@ -206,7 +206,7 @@ function! tabline#TabLine() "{{{
 
 endfunction "}}}
 
-function! tabline#TabLineSelectLastActive() "{{{
+function! s:TabLineSelectLastActive() "{{{
   if s:tab_exists(s:last_active_tab_number())
     call s:select_tab(s:last_active_tab_number())
   else
@@ -215,17 +215,19 @@ function! tabline#TabLineSelectLastActive() "{{{
   endif
 endfunction "}}}
 
-function! tabline#TabLineNew(...) "{{{
+function! s:TabLineNew(...) "{{{
   "TODO: figure out how to get count and use that as prefix to :tabnew
   let new_tab_number = s:last_tab_number() + 1
-  call s:create_tab(new_tab_number)
+  " call s:create_tab(new_tab_number)
+  execute 'tabnew'
   if a:0 == 1
-    call s:set_label_for_tab_number(new_tab_number, a:1)
+    " call s:set_label_for_tab_number(new_tab_number, a:1)
+    call s:set_label_for_tab_number(s:active_tab_number(), a:1)
   endif
   redraw! "TODO: might not need this
 endfunction "}}}
 
-function! tabline#TabLineLabel(label, ...) "{{{
+function! s:TabLineLabel(label, ...) "{{{
   let tab_number = a:0 == 1 ? a:1 : s:active_tab_number()
   if !s:tab_exists(tab_number)
     call s:error_tab_does_not_exist()
