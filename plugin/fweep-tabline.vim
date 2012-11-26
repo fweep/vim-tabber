@@ -9,7 +9,7 @@ let g:loaded_fweep_tabline = 1
 function! s:SetOptDefault(opt, val)
   "Taken from Tim Pope's rails.vim.
   if !exists("g:tabline_" . a:opt)
-    let g:{a:opt} = a:val
+    let g:{'tabline_' . a:opt} = a:val
   endif
 endfunction
 

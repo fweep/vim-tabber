@@ -10,6 +10,7 @@ Features
 
 * Powerline-inspired styling and glyphs.
 * User-definable tab labels.
+* Default labels based on tab numbers.
 * Tab numbers and window counts in each tab.
 * A command for selecting the last active tab.
 
@@ -82,6 +83,15 @@ stay with the tab it was originally assigned to.
 
 If a default label is no longer in use&mdash;either because you renamed it, or because the
 tab was closed&mdash;the next tab to open in that slot will be assigned the default label.
+
+Default Labels
+--------------
+
+You can set a default label for new tabs that are created without a label:
+
+    set g:tabline_default_unknown_label = 'Temp'
+
+This will apply to tabs created by `:tabnew`, by other plugins, etc.
 
 Example Bindings
 ----------------

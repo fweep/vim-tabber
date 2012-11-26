@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabline') || &cp
   finish
 endif
-let g:autoloaded_tabline = '0.5.2'
+let g:autoloaded_tabline = '0.5.3'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -71,6 +71,61 @@ endfunction "}}}
 
 " }}}
 
+" Exported Functions {{{
+
+function! tabline#TabLine() "{{{
+
+  let tabline = ''
+
+  for tab_number in range(1, s:last_tab_number())
+
+    let is_active_tab = tab_number == s:active_tab_number()
+    let tab_highlight = s:highlighted_text('TabLine', '', is_active_tab)
+
+    let tabline .= tab_highlight
+    let tabline .= s:mouse_handle_for_tab_number(tab_number)
+    let tabline .= s:highlighted_text('TabLineTabNumber', ' ' . tab_number, is_active_tab) . tab_highlight
+    let tabline .= s:window_count_for_tab_number(tab_number, is_active_tab) . tab_highlight
+
+    if s:tab_contains_modified_buffers(tab_number)
+      let tabline .= ' ' . s:highlighted_text('TabLineModifiedFlag', '+', is_active_tab) . tab_highlight
+    endif
+
+    let tabline_settings = s:tabline_settings_for_tab_number(tab_number)
+    if !empty(tabline_settings['label'])
+      if tabline_settings['tab_number_of_default_label'] > 0
+        let highlight = 'TabLineDefaultLabel'
+      else
+        let highlight = 'TabLineUserLabel'
+      endif
+      let tab_label = s:highlighted_text(highlight, tabline_settings['label'], is_active_tab) . tab_highlight
+    else
+      let tab_label = s:normal_label_for_tab_number(tab_number)
+    endif
+
+    let tabline .= ' ' . tab_label . ' '
+
+    if ((s:active_tab_number() == tab_number) || (s:active_tab_number() == (tab_number + 1)))
+      let tabline .= s:highlighted_text('TabLineDivider', s:divider_character_hard, is_active_tab)
+    elseif tab_number != s:last_tab_number()
+      let tabline .= s:divider_character_soft
+    endif
+
+  endfor
+
+  let tabline .= '%#TabLineFill#%T'
+
+  if s:last_tab_number() > 1
+    let tabline .= '%='
+    let tabline .= '%#TabLine#%999Xclose'
+  endif
+
+  return tabline
+
+endfunction "}}}
+
+" }}}
+
 " Script Utility Functions {{{
 
 " Tab Settings {{{
@@ -78,18 +133,22 @@ endfunction "}}}
 function! s:set_label_for_tab_number(tab_number, label) "{{{
   let tabline_settings = s:tabline_settings_for_tab_number(a:tab_number)
   let tabline_settings.label = a:label
-  let tabline_settings.using_default_label_for_tab_number = 0
+  let tabline_settings.tab_number_of_default_label = 0
   call s:save_tabline_settings_for_tab_number(a:tab_number, tabline_settings)
+endfunction "}}}
+
+function! s:tab_number_of_default_label_for_tab_number(tab_number) "{{{
+  let settings = gettabvar(a:tab_number, 'tabline_settings')
+  if empty(settings)
+    return 0
+  endif
+  return settings.tab_number_of_default_label
 endfunction "}}}
 
 function! s:default_label_in_use_for_tab_number(tab_number) "{{{
   let in_use = 0
   for tab_number in range(1, s:last_tab_number())
-    if tab_number == a:tab_number
-      continue
-    endif
-    let tabline_settings = s:tabline_settings_for_tab_number(tab_number)
-    if tabline_settings.using_default_label_for_tab_number == a:tab_number
+    if s:tab_number_of_default_label_for_tab_number(tab_number) == a:tab_number
       let in_use = 1
       break
     endif
@@ -110,10 +169,12 @@ function! s:save_tabline_settings_for_tab_number(tab_number, tabline_settings) "
 endfunction "}}}
 
 function! s:create_tabline_settings_for_tab_number(tab_number) "{{{
-  let tabline_settings = { 'label': '', 'using_default_label_for_tab_number': 0 }
+  let tabline_settings = { 'label': '', 'tab_number_of_default_label': 0 }
   if has_key(g:tabline_default_labels, a:tab_number) && !s:default_label_in_use_for_tab_number(a:tab_number)
     let tabline_settings['label'] = g:tabline_default_labels[a:tab_number]
-    let tabline_settings['using_default_label_for_tab_number'] = a:tab_number
+    let tabline_settings['tab_number_of_default_label'] = a:tab_number
+  elseif exists('g:tabline_default_unknown_label')
+    let tabline_settings.label = g:tabline_default_unknown_label
   endif
   call s:save_tabline_settings_for_tab_number(a:tab_number, tabline_settings)
   return tabline_settings
@@ -164,15 +225,6 @@ endfunction "}}}
 
 " }}}
 
-function! s:create_tab(new_tab_number) "{{{
-  execute a:new_tab_number . 'tabnew'
-endfunction "}}}
-
-function! s:select_tab(tab_number) "{{{
-  call s:save_active_tab_number()
-  execute 'tabnext ' . a:tab_number
-endfunction "}}}
-
 " Tabline() Helpers {{{
 
 function! s:mouse_handle_for_tab_number(tab_number) "{{{
@@ -222,6 +274,15 @@ endfunction "}}}
 
 " Command Handlers {{{
 
+function! s:create_tab(new_tab_number) "{{{
+  execute a:new_tab_number . 'tabnew'
+endfunction "}}}
+
+function! s:select_tab(tab_number) "{{{
+  call s:save_active_tab_number()
+  execute 'tabnext ' . a:tab_number
+endfunction "}}}
+
 function! s:command_count(count, line1) "{{{
   let command_count = ''
   if a:count == a:line1
@@ -264,62 +325,6 @@ function! s:TabLineLabel(count, line1, label) "{{{
 endfunction "}}}
 
 " }}}
-
-" }}}
-
-" Exported Functions {{{
-
-function! tabline#TabLine() "{{{
-
-  let tabline = ''
-
-  for tab_number in range(1, s:last_tab_number())
-
-    let is_active_tab = tab_number == s:active_tab_number()
-    let tab_highlight = s:highlighted_text('TabLine', '', is_active_tab)
-
-    let tabline .= tab_highlight
-    let tabline .= s:mouse_handle_for_tab_number(tab_number)
-    let tabline .= s:highlighted_text('TabLineTabNumber', ' ' . tab_number, is_active_tab) . tab_highlight
-    let tabline .= s:window_count_for_tab_number(tab_number, is_active_tab) . tab_highlight
-
-    if s:tab_contains_modified_buffers(tab_number)
-      let tabline .= ' ' . s:highlighted_text('TabLineModifiedFlag', '+', is_active_tab) . tab_highlight
-    endif
-
-    call s:tabline_settings_for_tab_number(tab_number)
-    let tabline_settings = s:tabline_settings_for_tab_number(tab_number)
-    if !empty(tabline_settings['label'])
-      if tabline_settings['using_default_label_for_tab_number'] > 0
-        let highlight = 'TabLineDefaultLabel'
-      else
-        let highlight = 'TabLineUserLabel'
-      endif
-      let tab_label = s:highlighted_text(highlight, tabline_settings['label'], is_active_tab) . tab_highlight
-    else
-      let tab_label = s:normal_label_for_tab_number(tab_number)
-    endif
-
-    let tabline .= ' ' . tab_label . ' '
-
-    if ((s:active_tab_number() == tab_number) || (s:active_tab_number() == (tab_number + 1)))
-      let tabline .= s:highlighted_text('TabLineDivider', s:divider_character_hard, is_active_tab)
-    elseif tab_number != s:last_tab_number()
-      let tabline .= s:divider_character_soft
-    endif
-
-  endfor
-
-  let tabline .= '%#TabLineFill#%T'
-
-  if s:last_tab_number() > 1
-    let tabline .= '%='
-    let tabline .= '%#TabLine#%999Xclose'
-  endif
-
-  return tabline
-
-endfunction "}}}
 
 " }}}
 
