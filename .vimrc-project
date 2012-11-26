@@ -1,2 +1,2 @@
-let g:tabline_predefined_labels = { 1: 'TabLine' }
+let g:tabber_predefined_labels = { 1: 'Tabber' }
 set foldmethod=marker foldlevel=0

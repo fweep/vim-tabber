@@ -1,18 +1,18 @@
-" autoload/tabline.vim
+" autoload/tabber.vim
 " Author: Jim Stewart <http://github.com/fweep/>
 
 " Inspiration and portions of code from Powerline by
 " Kim Silkebækken (https://github.com/Lokaltog/vim-powerline).
 
-if exists('g:autoloaded_tabline') || &cp
+if exists('g:autoloaded_tabber') || &cp
   finish
 endif
-let g:autoloaded_tabline = '0.5.3'
+let g:autoloaded_tabber = '0.5.3'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
 function! s:initialize_highlights() "{{{
-  if exists('g:tabline_suppress_highlights') && g:tabline_suppress_highlights
+  if exists('g:tabber_suppress_highlights') && g:tabber_suppress_highlights
     return
   endif
 
@@ -52,14 +52,14 @@ function! s:initialize_dividers() "{{{
 endfunction "}}}
 
 function! s:initialize_commands() "{{{
-  if exists('g:tabline_suppress_commands') && g:tabline_suppress_commands
+  if exists('g:tabber_suppress_commands') && g:tabber_suppress_commands
     return
   endif
 
-  command! -range=0 -nargs=1 TabLineLabel   :call <SID>TabLineLabel(<count>, <line1>, <f-args>)
-  command! -range=0 -nargs=0 TabLineClear   :call <SID>TabLineLabel(<count>, <line1>, '')
-  command! -range=0 -nargs=? TabLineNew     :call <SID>TabLineNew(<count>, <line1>, <f-args>)
-  command! -nargs=0 TabLineSelectLastActive :call <SID>TabLineSelectLastActive()
+  command! -range=0 -nargs=1 TabberLabel   :call <SID>TabberLabel(<count>, <line1>, <f-args>)
+  command! -range=0 -nargs=0 TabberClear   :call <SID>TabberLabel(<count>, <line1>, '')
+  command! -range=0 -nargs=? TabberNew     :call <SID>TabberNew(<count>, <line1>, <f-args>)
+  command! -nargs=0 TabberSelectLastActive :call <SID>TabberSelectLastActive()
 endfunction "}}}
 
 function! s:initialize() "{{{
@@ -73,7 +73,7 @@ endfunction "}}}
 
 " Exported Functions {{{
 
-function! tabline#TabLine() "{{{
+function! tabber#TabLine() "{{{
 
   let tabline = ''
 
@@ -138,7 +138,7 @@ function! s:set_label_for_tab(tab, label) "{{{
 endfunction "}}}
 
 function! s:tab_of_predefined_label_for_tab(tab) "{{{
-  let settings = gettabvar(a:tab, 'tabline_properties')
+  let settings = gettabvar(a:tab, 'tabber_properties')
   if empty(settings)
     return 0
   endif
@@ -157,7 +157,7 @@ function! s:predefined_label_in_use_for_tab(tab) "{{{
 endfunction "}}}
 
 function! s:properties_for_tab(tab) "{{{
-  let properties = gettabvar(a:tab, 'tabline_properties')
+  let properties = gettabvar(a:tab, 'tabber_properties')
   if empty(properties)
     return s:create_properties_for_tab(a:tab)
   endif
@@ -165,16 +165,16 @@ function! s:properties_for_tab(tab) "{{{
 endfunction "}}}
 
 function! s:save_properties_for_tab(tab, properties) "{{{
-  call settabvar(a:tab, 'tabline_properties', a:properties)
+  call settabvar(a:tab, 'tabber_properties', a:properties)
 endfunction "}}}
 
 function! s:create_properties_for_tab(tab) "{{{
   let properties = { 'label': '', 'tab_of_predefined_label': 0 }
-  if has_key(g:tabline_predefined_labels, a:tab) && !s:predefined_label_in_use_for_tab(a:tab)
-    let properties.label = g:tabline_predefined_labels[a:tab]
+  if has_key(g:tabber_predefined_labels, a:tab) && !s:predefined_label_in_use_for_tab(a:tab)
+    let properties.label = g:tabber_predefined_labels[a:tab]
     let properties.tab_of_predefined_label = a:tab
-  elseif exists('g:tabline_default_unknown_label')
-    let properties.label = g:tabline_default_unknown_label
+  elseif exists('g:tabber_default_unknown_label')
+    let properties.label = g:tabber_default_unknown_label
   endif
   call s:save_properties_for_tab(a:tab, properties)
   return properties
@@ -225,7 +225,7 @@ endfunction "}}}
 
 " }}}
 
-" Tabline() Helpers {{{
+" TabLine() Helpers {{{
 
 function! s:mouse_handle_for_tab(tab) "{{{
   return '%' . a:tab . 'T'
@@ -295,7 +295,7 @@ function! s:command_count(count, line1) "{{{
   return command_count
 endfunction "}}}
 
-function! s:TabLineSelectLastActive() "{{{
+function! s:TabberSelectLastActive() "{{{
   if s:tab_exists(s:last_active_tab())
     call s:select_tab(s:last_active_tab())
   else
@@ -303,15 +303,15 @@ function! s:TabLineSelectLastActive() "{{{
   endif
 endfunction "}}}
 
-function! s:TabLineNew(count, line1, ...) "{{{
+function! s:TabberNew(count, line1, ...) "{{{
   execute s:command_count(a:count, a:line1) . 'tabnew'
   let tab = s:active_tab()
   let properties = s:create_properties_for_tab(tab)
   let new_tab_label = ''
   if a:0 == 1
     let new_tab_label = a:1
-  elseif properties.tab_of_predefined_label != tab && exists('g:tabline_default_user_label')
-    let new_tab_label = g:tabline_default_user_label
+  elseif properties.tab_of_predefined_label != tab && exists('g:tabber_default_user_label')
+    let new_tab_label = g:tabber_default_user_label
   endif
   if !empty(new_tab_label)
     call s:set_label_for_tab(tab, new_tab_label)
@@ -319,7 +319,7 @@ function! s:TabLineNew(count, line1, ...) "{{{
   redraw!
 endfunction "}}}
 
-function! s:TabLineLabel(count, line1, label) "{{{
+function! s:TabberLabel(count, line1, label) "{{{
   let command_count = s:command_count(a:count, a:line1)
   let tab = empty(command_count) ? s:active_tab() : command_count
   if !s:tab_exists(tab)
