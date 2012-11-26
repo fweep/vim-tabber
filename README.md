@@ -83,6 +83,11 @@ Compatibility
 
 Tested with Vim 7.3.
 
+Limitations
+-----------
+
+Tab labels are lost when saving/restoring sessions.
+
 Author
 ------
 

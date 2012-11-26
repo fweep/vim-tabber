@@ -135,6 +135,31 @@ function! s:window_count_for_tab_number(tab_number, is_active_tab) "{{{
   return text
 endfunction "}}}
 
+function! s:tab_contains_modified_buffers(tab_number) "{{{
+  let tab_contains_modified_buffers = 0
+  let tab_buffer_list = tabpagebuflist(a:tab_number)
+  for buffer_number in tab_buffer_list
+    let buffer_modified = getbufvar(buffer_number, '&modified')
+    if buffer_modified
+      let tab_contains_modified_buffers = 1
+      break
+    endif
+  endfor
+  return tab_contains_modified_buffers
+endfunction "}}}
+
+function! s:default_label_for_tab_number(tab_number)
+  let tab_buffer_list = tabpagebuflist(a:tab_number)
+  let window_number = tabpagewinnr(a:tab_number)
+  let active_window_buffer_name = bufname(tab_buffer_list[window_number - 1])
+  if !empty(active_window_buffer_name)
+    let label = pathshorten(active_window_buffer_name)
+  else
+    let label = '[No Name]'
+  endif
+  return label
+endfunction
+
 " }}}
 
 " Exported Functions {{{
@@ -153,17 +178,7 @@ function! tabline#TabLine() "{{{
     let tabline .= s:highlighted_text('FweepTabLineTabNumber', ' ' . tab_number, is_active_tab) . tab_highlight
     let tabline .= s:window_count_for_tab_number(tab_number, is_active_tab) . tab_highlight
 
-    "TODO: maybe refactor this to another method, but don't want to load buffer list twice..
-    let tab_contains_modified_buffers = 0
-    let tab_buffer_list = tabpagebuflist(tab_number)
-    for buffer_number in tab_buffer_list
-      let buffer_modified = getbufvar(buffer_number, '&modified')
-      if buffer_modified
-        let tab_contains_modified_buffers = 1
-      endif
-    endfor
-
-    if tab_contains_modified_buffers
+    if s:tab_contains_modified_buffers(tab_number)
       let tabline .= ' ' . s:highlighted_text('FweepTabLineModifiedFlag', '+', is_active_tab) . tab_highlight
     endif
 
@@ -172,30 +187,25 @@ function! tabline#TabLine() "{{{
     if !empty(user_label)
       let tab_label = s:highlighted_text('FweepTabLineUserLabel', user_label, is_active_tab) . tab_highlight
     else
-      let window_number = tabpagewinnr(tab_number)
-      let active_window_buffer_name = bufname(tab_buffer_list[window_number - 1])
-
-      if !empty(active_window_buffer_name)
-        let default_tab_label = pathshorten(active_window_buffer_name)
-      else
-        let default_tab_label = '[No Name]'
-      endif
-
-      let tab_label = default_tab_label
+      let tab_label = s:default_label_for_tab_number(tab_number)
     endif
 
-    let tabline .= ' ' . tab_label
-    let tabline .= '%T ' "TODO: mouse handle method
+    let tabline .= ' ' . tab_label . ' '
 
     if ((s:active_tab_number() == tab_number) || (s:active_tab_number() == (tab_number + 1)))
-      let tabline .= s:highlighted_text('FweepTabLineDivider', s:divider_character_hard, is_active_tab) . tab_highlight
+      let tabline .= s:highlighted_text('FweepTabLineDivider', s:divider_character_hard, is_active_tab)
     elseif tab_number != s:last_tab_number()
       let tabline .= s:divider_character_soft
     endif
 
   endfor
 
-  let tabline .= '%#FweepTabLineFill#%=%999XX' "TODO: helper methods
+  let tabline .= '%#FweepTabLineFill#%T'
+
+  if s:last_tab_number() > 1
+    let tabline .= '%='
+    let tabline .= '%#FweepTabLine#%999Xclose'
+  endif
 
   return tabline
 
