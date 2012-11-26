@@ -129,6 +129,24 @@ Limitations
 Tab labels are lost when saving/restoring sessions.  If you have configured default labels,
 they will be applied.
 
+How I Use It
+------------
+
+In ~/.vimrc:
+
+    if filereadable('.vimrc-project')
+      source .vimrc-project
+    endif
+
+    set tabline=%!tabber#TabLine()
+
+    nnoremap <C-t> :999TabberNew<CR>
+    nnoremap <C-e> :TabberSelectLastActive<CR>
+
+In .vimrc-project in a Rails app root directory:
+
+    let g:tabber_predefined_labels = { 1: 'Controllers', 2: 'Views', 3: 'Models' }
+
 Author
 ------
 
