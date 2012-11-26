@@ -93,7 +93,7 @@ function! tabline#TabLine() "{{{
 
     let tabline_settings = s:tabline_settings_for_tab_number(tab_number)
     if !empty(tabline_settings['label'])
-      if tabline_settings['tab_number_of_default_label'] > 0
+      if tabline_settings['tab_number_of_predefined_label'] > 0
         let highlight = 'TabLineDefaultLabel'
       else
         let highlight = 'TabLineUserLabel'
@@ -133,22 +133,22 @@ endfunction "}}}
 function! s:set_label_for_tab_number(tab_number, label) "{{{
   let tabline_settings = s:tabline_settings_for_tab_number(a:tab_number)
   let tabline_settings.label = a:label
-  let tabline_settings.tab_number_of_default_label = 0
+  let tabline_settings.tab_number_of_predefined_label = 0
   call s:save_tabline_settings_for_tab_number(a:tab_number, tabline_settings)
 endfunction "}}}
 
-function! s:tab_number_of_default_label_for_tab_number(tab_number) "{{{
+function! s:tab_number_of_predefined_label_for_tab_number(tab_number) "{{{
   let settings = gettabvar(a:tab_number, 'tabline_settings')
   if empty(settings)
     return 0
   endif
-  return settings.tab_number_of_default_label
+  return settings.tab_number_of_predefined_label
 endfunction "}}}
 
-function! s:default_label_in_use_for_tab_number(tab_number) "{{{
+function! s:predefined_label_in_use_for_tab_number(tab_number) "{{{
   let in_use = 0
   for tab_number in range(1, s:last_tab_number())
-    if s:tab_number_of_default_label_for_tab_number(tab_number) == a:tab_number
+    if s:tab_number_of_predefined_label_for_tab_number(tab_number) == a:tab_number
       let in_use = 1
       break
     endif
@@ -169,10 +169,10 @@ function! s:save_tabline_settings_for_tab_number(tab_number, tabline_settings) "
 endfunction "}}}
 
 function! s:create_tabline_settings_for_tab_number(tab_number) "{{{
-  let tabline_settings = { 'label': '', 'tab_number_of_default_label': 0 }
-  if has_key(g:tabline_default_labels, a:tab_number) && !s:default_label_in_use_for_tab_number(a:tab_number)
-    let tabline_settings['label'] = g:tabline_default_labels[a:tab_number]
-    let tabline_settings['tab_number_of_default_label'] = a:tab_number
+  let tabline_settings = { 'label': '', 'tab_number_of_predefined_label': 0 }
+  if has_key(g:tabline_predefined_labels, a:tab_number) && !s:predefined_label_in_use_for_tab_number(a:tab_number)
+    let tabline_settings['label'] = g:tabline_predefined_labels[a:tab_number]
+    let tabline_settings['tab_number_of_predefined_label'] = a:tab_number
   elseif exists('g:tabline_default_unknown_label')
     let tabline_settings.label = g:tabline_default_unknown_label
   endif
@@ -310,7 +310,7 @@ function! s:TabLineNew(count, line1, ...) "{{{
   let new_tab_label = ''
   if a:0 == 1
     let new_tab_label = a:1
-  elseif tabline_settings.tab_number_of_default_label != tab_number && exists('g:tabline_default_user_label')
+  elseif tabline_settings.tab_number_of_predefined_label != tab_number && exists('g:tabline_default_user_label')
     let new_tab_label = g:tabline_default_user_label
   endif
   if !empty(new_tab_label)

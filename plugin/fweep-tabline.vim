@@ -13,4 +13,4 @@ function! s:SetOptDefault(opt, val)
   endif
 endfunction
 
-call s:SetOptDefault('default_labels', {})
+call s:SetOptDefault('predefined_labels', {})

@@ -8,11 +8,11 @@ tab management utilities.
 Features
 --------
 
-* Powerline-inspired styling and glyphs.
 * User-definable tab labels.
 * Default labels based on tab numbers.
 * Tab numbers and window counts in each tab.
 * A command for selecting the last active tab.
+* Powerline-inspired styling and glyphs.
 
 Installation
 ------------
@@ -73,7 +73,7 @@ Predefining Labels
 
 You can predefine label names that will be used when a matching tab number opens:
 
-    let g:tabline_default_labels = { 1: 'Models', 2: 'Views', 3: 'Controllers' }
+    let g:tabline_predefined_labels = { 1: 'Models', 2: 'Views', 3: 'Controllers' }
 
 If Vim opens with one tab, it will be labeled "Models".  When you open a second tab, it will
 be named "Controllers".  When you open a fourth tab, it will use the normal naming rules.
