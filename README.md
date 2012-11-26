@@ -11,7 +11,7 @@ Features
 * User-definable tab labels.
 * Default labels based on tab numbers.
 * Tab numbers and window counts in each tab.
-* A command for selecting the last active tab.
+* Commands to shift tabs left/right, move tabs, and jump to the last active tab.
 * Powerline-inspired styling and glyphs.
 
 Installation
@@ -61,12 +61,30 @@ This behavior is the same as Vim's `:tabnew`.  See `:help tabnew`.
     :2TabberNew New Third Tab
     :999TabberNew New Last Tab
 
-Last Active Tab
+Navigating Tabs
 ---------------
 
 To move to the last active tab:
 
     :TabberSelectLastActive
+
+Shift current tab left/right:
+
+    :TabberShiftLeft
+    :TabberShiftRight
+
+Move active tab to a new location:
+
+    :TabberMove <target tab number>
+
+This is identical to ``:tabmove``.
+
+Move tab 2 to tab 4:
+
+    :2TabberMove 3
+
+Note that the tab is placed _after_ the target tab, to follow the ``:tabmove`` convention.
+You can still use ``:tabmove`` as well.
 
 Predefining Labels
 ------------------
@@ -107,6 +125,10 @@ Prompt for a label if `:TabberNew` or `:TabberLabel` is called with no arguments
 
     let g:tabber_prompt_for_new_label = 1
 
+Wrap tabs when shifting:
+
+    let g:tabber_wrap_when_shifting = 1
+
 Example Bindings
 ----------------
 
@@ -140,8 +162,12 @@ In ~/.vimrc:
 
     set tabline=%!tabber#TabLine()
 
+    let g:tabber_wrap_when_shifting = 1
+
     nnoremap <C-t> :999TabberNew<CR>
     nnoremap <C-e> :TabberSelectLastActive<CR>
+    nnoremap < :TabberShiftLeft<CR>
+    nnoremap > :TabberShiftRight<CR>
 
 In .vimrc-project in a Rails app root directory:
 

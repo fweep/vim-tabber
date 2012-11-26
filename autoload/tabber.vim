@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabber') || &cp
   finish
 endif
-let g:autoloaded_tabber = '0.5.5'
+let g:autoloaded_tabber = '0.6.0'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -56,10 +56,13 @@ function! s:initialize_commands() "{{{
     return
   endif
 
-  command! -range=0 -nargs=? TabberLabel   :call <SID>TabberLabel(<count>, <line1>, <f-args>)
-  command! -range=0 -nargs=0 TabberClear   :call <SID>TabberLabel(<count>, <line1>, '')
-  command! -range=0 -nargs=? TabberNew     :call <SID>TabberNew(<count>, <line1>, <f-args>)
-  command! -nargs=0 TabberSelectLastActive :call <SID>TabberSelectLastActive()
+  command! -range=0 -nargs=? TabberLabel              call <SID>TabberLabel(<count>, <line1>, <f-args>)
+  command! -range=0 -nargs=0 TabberClearLabel         call <SID>TabberLabel(<count>, <line1>, '')
+  command! -range=0 -nargs=? TabberNew                call <SID>TabberNew(<count>, <line1>, <f-args>)
+  command! -nargs=0          TabberSelectLastActive   call <SID>TabberSelectLastActive()
+  command! -range=0 -nargs=1 TabberMove               call <SID>TabberMove(<count>, <line1>, <f-args>)
+  command!                   TabberShiftLeft          call <SID>TabberShiftLeft()
+  command!                   TabberShiftRight         call <SID>TabberShiftRight()
 endfunction "}}}
 
 function! s:initialize() "{{{
@@ -344,10 +347,60 @@ function! s:TabberLabel(count, line1, ...) "{{{
     else
       let new_tab_label = s:prompt_user_for_label(tab)
     endif
-    if !empty(new_tab_label)
-      call s:set_label_for_tab(tab, new_tab_label)
-    endif
+    call s:set_label_for_tab(tab, new_tab_label)
     redraw!
+  endif
+endfunction "}}}
+
+function! s:move_tab(source_tab, target_tab) "{{{
+  let active_tab = s:active_tab()
+  if a:source_tab != active_tab
+    execute 'tabnext ' . a:source_tab
+  endif
+  execute 'tabmove ' . a:target_tab
+  if active_tab == a:source_tab
+    let new_active_tab = a:target_tab + 1
+  elseif a:source_tab > active_tab && a:target_tab < active_tab
+    let new_active_tab = active_tab + 1
+  elseif a:source_tab < active_tab && a:target_tab >= (active_tab - 1)
+    let new_active_tab = active_tab - 1
+  else
+    let new_active_tab = active_tab
+  endif
+  execute 'tabnext ' . new_active_tab
+endfunction "}}}
+
+function! s:TabberShiftRight() "{{{
+  let active_tab = s:active_tab()
+  let target_tab = active_tab
+  if target_tab == s:last_tab() && g:tabber_wrap_when_shifting
+    let target_tab = 0
+  endif
+  if target_tab < s:last_tab()
+    call s:move_tab(active_tab, target_tab)
+  endif
+endfunction "}}}
+
+function! s:TabberShiftLeft() "{{{
+  let active_tab = s:active_tab()
+  let target_tab = active_tab - 2
+  if target_tab < 0 && g:tabber_wrap_when_shifting
+    let target_tab = s:last_tab()
+  endif
+  if target_tab >= 0
+    call s:move_tab(active_tab, target_tab)
+  endif
+endfunction "}}}
+
+function! s:TabberMove(count, line1, target_tab) "{{{
+  let source_tab = s:command_count(a:count, a:line1)
+  let tab = empty(source_tab) ? s:active_tab() : source_tab
+  if !s:tab_exists(tab)
+    call s:error_tab_does_not_exist()
+  else
+    if source_tab != a:target_tab + 1
+      call s:move_tab(tab, a:target_tab)
+    endif
   endif
 endfunction "}}}
 
