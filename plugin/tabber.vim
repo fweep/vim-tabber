@@ -14,3 +14,4 @@ function! s:SetOptDefault(opt, val)
 endfunction
 
 call s:SetOptDefault('predefined_labels', {})
+call s:SetOptDefault('prompt_for_new_label', 0)

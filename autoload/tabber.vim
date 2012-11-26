@@ -7,7 +7,7 @@
 if exists('g:autoloaded_tabber') || &cp
   finish
 endif
-let g:autoloaded_tabber = '0.5.3'
+let g:autoloaded_tabber = '0.5.4'
 
 " Initialization (Commands, Highlighting, Bindings) {{{
 
@@ -303,6 +303,16 @@ function! s:TabberSelectLastActive() "{{{
   endif
 endfunction "}}}
 
+function! s:prompt_user_for_label(tab) "{{{
+  let new_tab_label = ''
+  if g:tabber_prompt_for_new_label
+    call inputsave()
+    let new_tab_label = input('Label for tab ' . a:tab . ': ')
+    call inputrestore()
+  endif
+  return new_tab_label
+endfunction "}}}
+
 function! s:TabberNew(count, line1, ...) "{{{
   execute s:command_count(a:count, a:line1) . 'tabnew'
   let tab = s:active_tab()
@@ -310,8 +320,12 @@ function! s:TabberNew(count, line1, ...) "{{{
   let new_tab_label = ''
   if a:0 == 1
     let new_tab_label = a:1
-  elseif properties.tab_of_predefined_label != tab && exists('g:tabber_default_user_label')
-    let new_tab_label = g:tabber_default_user_label
+  elseif properties.tab_of_predefined_label != tab
+    if exists('g:tabber_default_user_label')
+      let new_tab_label = g:tabber_default_user_label
+    else
+      let new_tab_label = s:prompt_user_for_label(tab)
+    endif
   endif
   if !empty(new_tab_label)
     call s:set_label_for_tab(tab, new_tab_label)
