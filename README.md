@@ -173,6 +173,22 @@ In .vimrc-project in a Rails app root directory:
 
     let g:tabber_predefined_labels = { 1: 'Controllers', 2: 'Views', 3: 'Models' }
 
+Wish List
+---------
+
+Right now, Tabber totally replaces your tabline.  I'd like to figure out
+a way to plug this in to the regular tabline, so users can more easily
+configure it.  The built-in tabline is already pretty configurable.
+
+It'd be great if Tabber were as configurable as Powerline.  I'm thinking
+about making Powerline a requirement, and leveraging all of its
+functions, including themes, etc.  Since Lokaltog is in the middle of a
+Powerline rewrite, I'll wait and see what comes of that.  He might
+include tabline support.
+
+This could be split up into two plugins: one for styling and one for the
+tab manipulation utilities.
+
 Author
 ------
 
