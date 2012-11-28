@@ -275,7 +275,11 @@ function! s:normal_label_for_tab(tab) "{{{
   let window_number = tabpagewinnr(a:tab)
   let active_window_buffer_name = bufname(tab_buffer_list[window_number - 1])
   if !empty(active_window_buffer_name)
-    let label = pathshorten(active_window_buffer_name)
+    if g:tabber_filename_style == 'pathshorten'
+      let label = pathshorten(active_window_buffer_name)
+    elseif g:tabber_filename_style == 'filename'
+      let label = fnamemodify(active_window_buffer_name, ':t')
+    endif
   else
     let label = '[No Name]'
   endif
