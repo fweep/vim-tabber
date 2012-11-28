@@ -279,6 +279,8 @@ function! s:normal_label_for_tab(tab) "{{{
       let label = pathshorten(active_window_buffer_name)
     elseif g:tabber_filename_style == 'filename'
       let label = fnamemodify(active_window_buffer_name, ':t')
+    elseif g:tabber_filename_style == 'relative'
+      let label = fnamemodify(active_window_buffer_name, ':~:.')
     endif
   else
     let label = '[No Name]'
