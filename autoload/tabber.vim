@@ -63,6 +63,7 @@ function! s:initialize_commands() "{{{
   command! -range=0 -nargs=1 TabberMove               call <SID>TabberMove(<count>, <line1>, <f-args>)
   command!                   TabberShiftLeft          call <SID>TabberShiftLeft()
   command!                   TabberShiftRight         call <SID>TabberShiftRight()
+  command! -range=0 -nargs=1 TabberSwap               call <SID>TabberSwap(<count>, <line1>, <f-args>)
 endfunction "}}}
 
 function! s:initialize() "{{{
@@ -198,8 +199,8 @@ function! s:error(message) "{{{
   let v:errmsg = a:message
 endfunction "}}}
 
-function! s:error_tab_does_not_exist() "{{{
-  return s:error('Tab does not exist.')
+function! s:error_tab_does_not_exist(tab) "{{{
+  return s:error('Tab ' . a:tab . ' does not exist.')
 endfunction "}}}
 
 " }}}
@@ -216,6 +217,14 @@ endfunction "}}}
 
 function! s:tab_exists(tab) "{{{
   return a:tab > 0 && a:tab <= s:last_tab()
+endfunction "}}}
+
+function! s:tab_exists_or_error(tab) "{{{
+  let tab_exists = a:tab > 0 && a:tab <= s:last_tab()
+  if !tab_exists
+    call s:error_tab_does_not_exist(a:tab)
+  endif
+  return tab_exists
 endfunction "}}}
 
 function! s:save_active_tab() "{{{
@@ -339,9 +348,7 @@ endfunction "}}}
 function! s:TabberLabel(count, line1, ...) "{{{
   let command_count = s:command_count(a:count, a:line1)
   let tab = empty(command_count) ? s:active_tab() : command_count
-  if !s:tab_exists(tab)
-    call s:error_tab_does_not_exist()
-  else
+  if s:tab_exists_or_error(tab)
     if a:0 == 1
       let new_tab_label = a:1
     else
@@ -392,12 +399,21 @@ function! s:TabberShiftLeft() "{{{
   endif
 endfunction "}}}
 
+function! s:TabberSwap(count, line1, target_tab) "{{{
+  let source_tab = s:command_count(a:count, a:line1)
+  let source_tab = empty(source_tab) ? s:active_tab() : source_tab
+  if source_tab != a:target_tab && s:tab_exists_or_error(source_tab) && s:tab_exists_or_error(a:target_tab)
+    let left_tab = min([source_tab, a:target_tab])
+    let right_tab = max([source_tab, a:target_tab])
+    call s:move_tab(right_tab, left_tab - 1)
+    call s:move_tab(left_tab + 1, right_tab - 1)
+  endif
+endfunction "}}}
+
 function! s:TabberMove(count, line1, target_tab) "{{{
   let source_tab = s:command_count(a:count, a:line1)
   let tab = empty(source_tab) ? s:active_tab() : source_tab
-  if !s:tab_exists(tab)
-    call s:error_tab_does_not_exist()
-  else
+  if s:tab_exists_or_error(tab)
     if source_tab != a:target_tab + 1
       call s:move_tab(tab, a:target_tab)
     endif
