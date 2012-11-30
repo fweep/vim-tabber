@@ -2,15 +2,14 @@ vim-tabber
 =============
 
 A Vim plugin for labeling and manipulating tabs, visually styled after
-[Powerline](http://github.com/Lokaltog/vim-powerline), with additional
-tab management utilities.
+[Powerline](http://github.com/Lokaltog/vim-powerline).
 
 Features
 --------
 
 * User-definable tab labels.
 * Default labels based on tab numbers.
-* Tab numbers and window counts in each tab.
+* Tab number and window count in each tab.
 * Commands to shift tabs left/right, move tabs, and jump to the last active tab.
 * Powerline-inspired styling and glyphs.
 
