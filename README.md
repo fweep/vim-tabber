@@ -170,6 +170,11 @@ they will be applied.
 How I Use It
 ------------
 
+These mappings mask the Vim default \<C-t\> for navigating the tag
+stack, and possibly conflict with other bindings you may have, but
+should show what can be done with the plugin.  The maps allow me to move
+tabs around with a count prefix without leaving normal mode.
+
 In ~/.vimrc:
 
     if filereadable('.vimrc-project')
@@ -180,24 +185,23 @@ In ~/.vimrc:
 
     let g:tabber_wrap_when_shifting = 1
 
-    nnoremap <C-t>              :999TabberNew<CR>
-    nnoremap <leader><leader>   :TabberSelectLastActive<CR>
-    nnoremap <leader>tc         :tabclose<CR>
-    nnoremap <leader>tl         :TabberShiftLeft<CR>
-    nnoremap <leader>tr         :TabberShiftRight<CR>
-    nnoremap <leader>ts         :TabberSwap<CR>
-    nnoremap <silent> <Leader>1 :tabnext 1<CR>
-    nnoremap <silent> <Leader>2 :tabnext 2<CR>
-    nnoremap <silent> <Leader>3 :tabnext 3<CR>
-    nnoremap <silent> <Leader>4 :tabnext 4<CR>
-    nnoremap <silent> <Leader>5 :tabnext 5<CR>
-    nnoremap <silent> <Leader>6 :tabnext 6<CR>
-    nnoremap <silent> <Leader>7 :tabnext 7<CR>
-    nnoremap <silent> <Leader>8 :tabnext 8<CR>
-    nnoremap <silent> <Leader>9 :tabnext 9<CR>
-
-Note that \<C-t\> normally navigates the tab stack, but my open-new-browser-tab muscle
-memory is strong, so this is a natural fit for me.
+    nnoremap <silent> <C-t>            :999TabberNew<CR>
+    nnoremap <silent> <Leader><Leader> :TabberSelectLastActive<CR>
+    nnoremap <silent> <Leader>tn       :TabberNew<CR>
+    nnoremap <silent> <Leader>tm       :TabberMove<CR>
+    nnoremap <silent> <Leader>tc       :tabclose<CR>
+    nnoremap <silent> <Leader>tl       :TabberShiftLeft<CR>
+    nnoremap <silent> <Leader>tr       :TabberShiftRight<CR>
+    nnoremap <silent> <Leader>ts       :TabberSwap<CR>
+    nnoremap <silent> <Leader>1        :tabnext 1<CR>
+    nnoremap <silent> <Leader>2        :tabnext 2<CR>
+    nnoremap <silent> <Leader>3        :tabnext 3<CR>
+    nnoremap <silent> <Leader>4        :tabnext 4<CR>
+    nnoremap <silent> <Leader>5        :tabnext 5<CR>
+    nnoremap <silent> <Leader>6        :tabnext 6<CR>
+    nnoremap <silent> <Leader>7        :tabnext 7<CR>
+    nnoremap <silent> <Leader>8        :tabnext 8<CR>
+    nnoremap <silent> <Leader>9        :tabnext 9<CR>
 
 In .vimrc-project in a Rails app root directory:
 
@@ -224,7 +228,7 @@ Author
 
 [Jim Stewart](http://github.com/fweep)
 
-Credits
+Acknowledgements
 -------
 
 Thanks to Kim Silkebækken for writing the excellent Powerline plugin!  Some of Tabber's
