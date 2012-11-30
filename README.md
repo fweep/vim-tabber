@@ -145,6 +145,15 @@ Wrap tabs when shifting:
 
     let g:tabber_wrap_when_shifting = 1
 
+Control what's shown in unlabeled tabs.  If the current directory is
+~jim and ~/.vim/bundle/vim-tabber/README.md is loaded in the active
+window for the tab:
+
+    let g:tabber_filename_style = 'pathshorten' " .v/b/v/README.md
+    let g:tabber_filename_style = 'full'        " /home/jim/.vim/bundle/vim-tabber/README.md
+    let g:tabber_filename_style = 'relative'    " .vim/bundle/vim-tabber/README.md
+    let g:tabber_filename_style = 'filename'    " README.md
+
 Example Bindings
 ----------------
 
