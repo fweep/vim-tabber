@@ -68,6 +68,9 @@ To move to the last active tab:
 
     :TabberSelectLastActive
 
+Moving Tabs
+-----------
+
 Shift current tab left/right:
 
     :TabberShiftLeft
@@ -85,6 +88,20 @@ Move tab 2 to tab 4:
 
 Note that the tab is placed _after_ the target tab, to follow the ``:tabmove`` convention.
 You can still use ``:tabmove`` as well.
+
+To swap tab 1 and tab 3:
+
+    :1TabberSwap 3
+    :3TabberSwap 1
+
+If tab 1 is the current tab:
+
+    :3TabberSwap
+    :TabberSwap 3
+
+With `,ts` mapped to `:TabberSwap<CR>`:
+
+    3,ts
 
 Predefining Labels
 ------------------
@@ -164,10 +181,24 @@ In ~/.vimrc:
 
     let g:tabber_wrap_when_shifting = 1
 
-    nnoremap <C-t> :999TabberNew<CR>
-    nnoremap <C-e> :TabberSelectLastActive<CR>
-    nnoremap < :TabberShiftLeft<CR>
-    nnoremap > :TabberShiftRight<CR>
+    nnoremap <C-t>              :999TabberNew<CR>
+    nnoremap <leader><leader>   :TabberSelectLastActive<CR>
+    nnoremap <leader>tc         :tabclose<CR>
+    nnoremap <leader>tl         :TabberShiftLeft<CR>
+    nnoremap <leader>tr         :TabberShiftRight<CR>
+    nnoremap <leader>ts         :TabberSwap<CR>
+    nnoremap <silent> <Leader>1 :tabnext 1<CR>
+    nnoremap <silent> <Leader>2 :tabnext 2<CR>
+    nnoremap <silent> <Leader>3 :tabnext 3<CR>
+    nnoremap <silent> <Leader>4 :tabnext 4<CR>
+    nnoremap <silent> <Leader>5 :tabnext 5<CR>
+    nnoremap <silent> <Leader>6 :tabnext 6<CR>
+    nnoremap <silent> <Leader>7 :tabnext 7<CR>
+    nnoremap <silent> <Leader>8 :tabnext 8<CR>
+    nnoremap <silent> <Leader>9 :tabnext 9<CR>
+
+Note that \<C-t\> normally navigates the tab stack, but my open-new-browser-tab muscle
+memory is strong, so this is a natural fit for me.
 
 In .vimrc-project in a Rails app root directory:
 

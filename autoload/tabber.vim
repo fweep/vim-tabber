@@ -63,7 +63,7 @@ function! s:initialize_commands() "{{{
   command! -range=0 -nargs=1 TabberMove               call <SID>TabberMove(<count>, <line1>, <f-args>)
   command!                   TabberShiftLeft          call <SID>TabberShiftLeft()
   command!                   TabberShiftRight         call <SID>TabberShiftRight()
-  command! -range=0 -nargs=1 TabberSwap               call <SID>TabberSwap(<count>, <line1>, <f-args>)
+  command! -range=0 -nargs=? TabberSwap               call <SID>TabberSwap(<count>, <f-args>)
 endfunction "}}}
 
 function! s:initialize() "{{{
@@ -281,6 +281,8 @@ function! s:normal_label_for_tab(tab) "{{{
       let label = fnamemodify(active_window_buffer_name, ':t')
     elseif g:tabber_filename_style == 'relative'
       let label = fnamemodify(active_window_buffer_name, ':~:.')
+    elseif g:tabber_filename_style == 'full'
+      let label = fnamemodify(active_window_buffer_name, ':p')
     endif
   else
     let label = '[No Name]'
@@ -405,12 +407,25 @@ function! s:TabberShiftLeft() "{{{
   endif
 endfunction "}}}
 
-function! s:TabberSwap(count, line1, target_tab) "{{{
-  let source_tab = s:command_count(a:count, a:line1)
-  let source_tab = empty(source_tab) ? s:active_tab() : source_tab
-  if source_tab != a:target_tab && s:tab_exists_or_error(source_tab) && s:tab_exists_or_error(a:target_tab)
-    let left_tab = min([source_tab, a:target_tab])
-    let right_tab = max([source_tab, a:target_tab])
+function! s:TabberSwap(count, ...) "{{{
+  if v:count == v:count1
+    "Handles key map with count.
+    let source_tab = s:active_tab()
+    let target_tab = v:count
+  else
+    "Handles key map without count and command-line with count and/or argument.
+    if a:count == 0 && (a:0 == 0 || a:1 == 0)
+      call s:error("Target tab required.")
+      return
+    endif
+
+    let source_tab = a:0 ? a:1 : s:active_tab()
+    let target_tab = a:count ? a:count : s:active_tab()
+  endif
+
+  if source_tab != target_tab && s:tab_exists_or_error(source_tab) && s:tab_exists_or_error(target_tab)
+    let left_tab = min([source_tab, target_tab])
+    let right_tab = max([source_tab, target_tab])
     call s:move_tab(right_tab, left_tab - 1)
     call s:move_tab(left_tab + 1, right_tab - 1)
   endif
