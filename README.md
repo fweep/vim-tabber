@@ -10,7 +10,8 @@ Features
 * User-definable tab labels.
 * Default labels based on tab numbers.
 * Tab number and window count in each tab.
-* Commands to shift tabs left/right, move tabs, and jump to the last active tab.
+* Commands to shift tabs left/right, move tabs, and jump to the last
+  active tab.
 * Powerline-inspired styling and glyphs.
 
 Installation
@@ -28,8 +29,9 @@ Add this to your .vimrc:
 Setting Labels
 --------------
 
-Tab labels default to pathshorten() on the active buffer name.  If the buffer has no name, "\[No Name\]"
-is displayed.  You can override the default label for a tab and set your own.  The tab will use your label
+Tab labels default to pathshorten() on the active buffer name.  If the
+buffer has no name, "\[No Name\]" is displayed.  You can override the
+default label for a tab and set your own.  The tab will use your label
 until you clear it or close the tab.
 
 To set a label for the current tab:
@@ -40,7 +42,8 @@ To remove the label from the current tab:
 
     :TabberClear
 
-You can also set/remove labels on other tabs by prefixing the command with the tab number:
+You can also set/remove labels on other tabs by prefixing the command
+with the tab number:
 
     :4TabberLabel New Name For Tab Four
     :4TabberClear
@@ -52,8 +55,9 @@ To create a new tab with a label:
 
     :TabberNew Refactoring Controller
 
-You can supply an optional count prefix to TabberNew, to specify where the new tab should be opened.
-This behavior is the same as Vim's `:tabnew`.  See `:help tabnew`.
+You can supply an optional count prefix to TabberNew, to specify where
+the new tab should be opened.  This behavior is the same as Vim's
+`:tabnew`.  See `:help tabnew`.
 
     :TabberNew New Tab After Current Tab
     :0TabberNew New First Tab
@@ -85,8 +89,8 @@ Move tab 2 to tab 4:
 
     :2TabberMove 3
 
-Note that the tab is placed _after_ the target tab, to follow the ``:tabmove`` convention.
-You can still use ``:tabmove`` as well.
+Note that the tab is placed _after_ the target tab, to follow the
+``:tabmove`` convention.  You can still use ``:tabmove`` as well.
 
 To swap tab 1 and tab 3:
 
@@ -105,18 +109,21 @@ With `,ts` mapped to `:TabberSwap<CR>`:
 Predefining Labels
 ------------------
 
-You can predefine label names that will be used when a matching tab number opens:
+You can predefine label names that will be used when a matching tab
+number opens:
 
     let g:tabber_predefined_labels = { 1: 'Models', 2: 'Views', 3: 'Controllers' }
 
-If Vim opens with one tab, it will be labeled "Models".  When you open a second tab, it will
-be named "Controllers".  When you open a fourth tab, it will use the normal naming rules.
+If Vim opens with one tab, it will be labeled "Models".  When you open a
+second tab, it will be named "Controllers".  When you open a fourth tab,
+it will use the normal naming rules.
 
-If the tabs are re-arranged (e.g. by inserting a tab before a labeled one), the label will
-stay with the tab it was originally assigned to.
+If the tabs are re-arranged (e.g. by inserting a tab before a labeled
+one), the label will stay with the tab it was originally assigned to.
 
-If a default label is no longer in use&mdash;either because you renamed it, or because the
-tab was closed&mdash;the next tab to open in that slot will be assigned the default label.
+If a default label is no longer in use&mdash;either because you renamed
+it, or because the tab was closed&mdash;the next tab to open in that
+slot will be assigned the default label.
 
 Default Labels
 --------------
@@ -129,15 +136,17 @@ You can set a default label for new tabs that are created without a label:
 
     set g:tabber_default_unknown_label = 'Temp'
 
-This will apply to tabs created by `:tabnew`, by other plugins, etc.  It will apply
-to labels created by `:TabberNew` if `g:tabber_default_user_label` is not set.
+This will apply to tabs created by `:tabnew`, by other plugins, etc.  It
+will apply to labels created by `:TabberNew` if
+`g:tabber_default_user_label` is not set.
 
 Predefined labels always take precedence over these options.
 
 Other Options
 -------------
 
-Prompt for a label if `:TabberNew` or `:TabberLabel` is called with no arguments, and no defaults apply:
+Prompt for a label if `:TabberNew` or `:TabberLabel` is called with no
+arguments, and no defaults apply:
 
     let g:tabber_prompt_for_new_label = 1
 
@@ -157,7 +166,8 @@ window for the tab:
 Example Bindings
 ----------------
 
-Bind \<C-t\> to open a new tab at the end of the tab list with the label "Scratch":
+Bind \<C-t\> to open a new tab at the end of the tab list with the label
+"Scratch":
 
     nnoremap <C-t> :999TabberNew Scratch<CR>
 
@@ -173,8 +183,8 @@ Tested with Vim 7.3.
 Limitations
 -----------
 
-Tab labels are lost when saving/restoring sessions.  If you have configured default labels,
-they will be applied.
+Tab labels are lost when saving/restoring sessions.  If you have
+configured default labels, they will be applied.
 
 How I Use It
 ------------
@@ -240,25 +250,31 @@ Author
 Acknowledgements
 -------
 
-Thanks to Kim Silkebækken for writing the excellent Powerline plugin!  Some of Tabber's
-code was copied from or modeled after Powerline.  Thanks also to Tim Pope and others for
+Thanks to Kim Silkebækken for writing the excellent Powerline plugin!
+Some of Tabber's code was copied from or modeled after Powerline, to
+match color schemes and symbols.  Thanks also to Tim Pope and others for
 providing great code from which to learn Vimscript.
 
-License
+MIT License
 -------
 
 Copyright (C) 2012 Jim Stewart
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-documentation files (the "Software"), to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions
-of the Software.
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

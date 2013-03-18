@@ -46,6 +46,12 @@ function! s:ParseChars(arg) "{{{22
 endfunction
 
 function! s:initialize_dividers() "{{{2
+  " Dividers from Powerline.
+  let s:divider_symbols = {
+        \ 'compatible': { 'dividers': [ '', [0x2502], '', [0x2502] ] },
+        \ 'unicode': { 'dividers': [[0x25b6], [0x276f], [0x25c0], [0x276e]] },
+        \ 'fancy': { 'dividers': [[0x2b80], [0x2b81], [0x2b82], [0x2b83]] }
+        \ }
   let s:divider_characters = [ [0x2b80], [0x2b81], [0x2b82], [0x2b83] ]
   let s:divider_character_hard = s:ParseChars(deepcopy(s:divider_characters[0]))
   let s:divider_character_soft = s:ParseChars(deepcopy(s:divider_characters[1]))
@@ -229,6 +235,84 @@ endfunction
 
 " TabLine() Helpers {{{1
 
+function! s:AddDivider(text, side, mode, colors, prev, curr, next) " {{{
+  " From Powerline.
+  let seg_prev = a:prev
+  let seg_curr = a:curr
+  let seg_next = a:next
+
+  " Set default color/type for the divider
+  let div_colors = get(a:colors, a:mode, a:colors['n'])
+  let div_type = s:SOFT_DIVIDER
+
+  " Define segment to compare
+  let cmp_seg = a:side == s:LEFT_SIDE ? seg_next : seg_prev
+
+  let cmp_all_colors = get(cmp_seg, 'colors', {})
+  let cmp_colors = get(cmp_all_colors, a:mode, get(cmp_all_colors, 'n', {}))
+
+  if ! empty(cmp_colors)
+    " Compare the highlighting groups
+    "
+    " If the background color for cterm is equal, use soft divider with the current segment's highlighting
+    " If not, use hard divider with a new highlighting group
+    "
+    " Note that if the previous/next segment is the split, a hard divider is always used
+    if get(div_colors, 'ctermbg') != get(cmp_colors, 'ctermbg') || get(seg_next, 'name') ==# 'SPLIT' || get(seg_prev, 'name') ==# 'SPLIT'
+      let div_type = s:HARD_DIVIDER
+
+      " Create new highlighting group
+      if div_colors['attr'] =~ 'reverse' && cmp_colors['attr'] =~ 'reverse'
+        " Use FG = CURRENT FG, BG = CMP FG
+        let div_colors['ctermbg'] = get(cmp_colors, 'ctermfg')
+        let div_colors['guibg']   = get(cmp_colors, 'guifg')
+
+        let div_colors['attr']    = div_colors['attr'] =~ 'bold' ? 'bold' : 'NONE'
+      elseif div_colors['attr'] =~ 'reverse'
+        " Use FG = CURRENT FG, BG = CMP BG
+        let div_colors['ctermbg'] = get(cmp_colors, 'ctermbg')
+        let div_colors['guibg']   = get(cmp_colors, 'guibg')
+
+        let div_colors['attr']    = div_colors['attr'] =~ 'bold' ? 'bold' : 'NONE'
+      elseif cmp_colors['attr'] =~ 'reverse'
+        " Use FG = CMP FG, BG = CURRENT BG : reversed
+        let div_colors['ctermfg'] = get(cmp_colors, 'ctermfg')
+        let div_colors['guifg']   = get(cmp_colors, 'guifg')
+
+        let div_colors['attr']    = 'reverse'
+
+      else
+        " Use FG = CURRENT BG, BG = CMP BG
+        let div_colors['ctermfg'] = get(div_colors, 'ctermbg')
+        let div_colors['guifg']   = get(div_colors, 'guibg')
+
+        let div_colors['ctermbg'] = get(cmp_colors, 'ctermbg')
+        let div_colors['guibg']   = get(cmp_colors, 'guibg')
+
+        let div_colors['attr']    = 'NONE'
+      endif
+    endif
+  endif
+
+  " Prepare divider
+  let divider_raw = deepcopy(g:Pl#Parser#Symbols[g:Powerline_symbols].dividers[a:side + div_type])
+  let divider = Pl#Parser#ParseChars(divider_raw)
+
+  " Don't add dividers for segments adjacent to split (unless it's a hard divider)
+  if ((get(seg_next, 'name') ==# 'SPLIT' || get(seg_prev, 'name') ==# 'SPLIT') && div_type != s:HARD_DIVIDER)
+    return ''
+  endif
+
+  if a:side == s:LEFT_SIDE
+    " Left side
+    " Divider to the right
+    return printf('%%(%s%%#%s#%s%%)', a:text, s:HlCreate(div_colors), divider)
+  else
+    " Right side
+    " Divider to the left
+    return printf('%%(%%#%s#%s%s%%)', s:HlCreate(div_colors), divider, a:text)
+  endif
+endfunction " }}}
 function! s:mouse_handle_for_tab(tab) "{{{2
   return '%' . a:tab . 'T'
 endfunction
