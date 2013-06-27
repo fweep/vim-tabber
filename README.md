@@ -4,6 +4,8 @@ vim-tabber
 A Vim plugin for labeling and manipulating tabs, visually styled after
 [Powerline](http://github.com/Lokaltog/vim-powerline).
 
+![screenshot](https://raw.github.com/fweep/vim-tabber/gh-pages/vim-tabber-screenshot.png)
+
 NOTE
 ----
 
