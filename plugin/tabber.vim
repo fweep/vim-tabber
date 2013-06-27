@@ -16,3 +16,4 @@ endfunction
 call s:SetOptDefault('predefined_labels', {})
 call s:SetOptDefault('prompt_for_new_label', 0)
 call s:SetOptDefault('wrap_when_shifting', 0)
+call s:SetOptDefault('filename_style', 'pathshorten')
