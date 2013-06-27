@@ -5,6 +5,19 @@ A Vim plugin for labeling and manipulating tabs, visually styled after
 [Powerline](http://github.com/Lokaltog/vim-powerline), with additional
 tab management utilities.
 
+NOTE
+----
+
+I've been sitting on this plugin for months, with the intention of
+cleaning up the code, testing it with MacVim and other variants
+(particularly gvim), and breaking the reliance on the (now-deprecated)
+[vim-powerline](https://github.com/Lokaltog/vim-powerline) plugin.  I
+haven't had the time, though, and the plugin already does what I want
+well enough that I haven't been motivated.
+
+So I'm making the repository public in the hope that others will find it
+useful.  If so, I'd be happy to make small changes on request.
+
 Features
 --------
 
