@@ -52,7 +52,7 @@ function! s:initialize_dividers() "{{{2
         \ 'unicode': { 'dividers': [[0x25b6], [0x276f], [0x25c0], [0x276e]] },
         \ 'fancy': { 'dividers': [[0x2b80], [0x2b81], [0x2b82], [0x2b83]] }
         \ }
-  let s:divider_characters = [ [0x2b80], [0x2b81], [0x2b82], [0x2b83] ]
+  let s:divider_characters = s:divider_symbols[g:tabber_divider_style].dividers
   let s:divider_character_hard = s:ParseChars(deepcopy(s:divider_characters[0]))
   let s:divider_character_soft = s:ParseChars(deepcopy(s:divider_characters[1]))
 endfunction
