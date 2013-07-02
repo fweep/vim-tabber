@@ -178,6 +178,12 @@ window for the tab:
     let g:tabber_filename_style = 'relative'    " .vim/bundle/vim-tabber/README.md
     let g:tabber_filename_style = 'filename'    " README.md
 
+Use different divider styles:
+
+    let g:tabber_divider_style = 'compatible'
+    let g:tabber_divider_style = 'unicode'
+    let g:tabber_divider_style = 'fancy'
+
 Example Bindings
 ----------------
 
