@@ -16,23 +16,23 @@ function! s:initialize_highlights() "{{{2
     return
   endif
 
-  execute 'highlight TabLine cterm=NONE ctermfg=244 ctermbg=235'
-  execute 'highlight TabLineSel cterm=reverse ctermfg=239 ctermbg=187'
-  execute 'highlight TabLineFill cterm=NONE ctermfg=244 ctermbg=235'
+  execute 'highlight TabLine cterm=NONE ctermfg=244 ctermbg=235 guifg=#808080 guibg=#262626'
+  execute 'highlight TabLineSel cterm=reverse ctermfg=239 ctermbg=187 guifg=#4e4e4e guibg=#d7d7af'
+  execute 'highlight TabLineFill cterm=NONE ctermfg=244 ctermbg=235 guifg=#808080 guibg=#262626'
 
   "TODO: derive these from TabLine
-  execute 'highlight TabLineTabNumber ctermbg=235 ctermfg=33'
-  execute 'highlight TabLineTabNumberSel ctermbg=239 ctermfg=33'
-  execute 'highlight TabLineWindowCount ctermbg=235 ctermfg=33'
-  execute 'highlight TabLineWindowCountSel ctermbg=239 ctermfg=33'
-  execute 'highlight TabLineModifiedFlag ctermbg=235 ctermfg=red'
-  execute 'highlight TabLineModifiedFlagSel ctermbg=239 ctermfg=red'
-  execute 'highlight TabLineDivider cterm=reverse ctermfg=239 ctermbg=235'
-  execute 'highlight TabLineDividerSel ctermbg=235 ctermfg=239'
-  execute 'highlight TabLineUserLabel ctermfg=173 ctermbg=235'
-  execute 'highlight TabLineUserLabelSel ctermfg=173 ctermbg=239'
-  execute 'highlight TabLineDefaultLabel ctermfg=143 ctermbg=235'
-  execute 'highlight TabLineDefaultLabelSel ctermfg=143 ctermbg=239'
+  execute 'highlight TabLineTabNumber ctermbg=235 ctermfg=33 guibg=#262626 guifg=#0087ff'
+  execute 'highlight TabLineTabNumberSel ctermbg=239 ctermfg=33 guibg=#4e4e4e guifg=#0087ff'
+  execute 'highlight TabLineWindowCount ctermbg=235 ctermfg=33 guibg=#262626 guifg=#0087ff'
+  execute 'highlight TabLineWindowCountSel ctermbg=239 ctermfg=33 guibg=#4e4e4e guifg=#0087ff'
+  execute 'highlight TabLineModifiedFlag ctermbg=235 ctermfg=red guibg=#262626 guifg=red'
+  execute 'highlight TabLineModifiedFlagSel ctermbg=239 ctermfg=red guibg=#4e4e4e guifg=red'
+  execute 'highlight TabLineDivider cterm=reverse ctermfg=239 ctermbg=235 guibg=#4e4e4e guifg=#262626'
+  execute 'highlight TabLineDividerSel ctermbg=235 ctermfg=239 guibg=#262626 guifg=#4e4e4e'
+  execute 'highlight TabLineUserLabel ctermfg=173 ctermbg=235 guifg=#d7875f guibg=#262626'
+  execute 'highlight TabLineUserLabelSel ctermfg=173 ctermbg=239 guifg=#d7875f guibg=#4e4e4e'
+  execute 'highlight TabLineDefaultLabel ctermfg=143 ctermbg=235 guifg=#afaf5f guibg=#262626'
+  execute 'highlight TabLineDefaultLabelSel ctermfg=143 ctermbg=239 guifg=#afaf5f guibg=#4e4e4e'
 endfunction
 
 function! s:ParseChars(arg) "{{{22
