@@ -6,19 +6,6 @@ A Vim plugin for labeling and manipulating tabs, visually styled after
 
 ![screenshot](https://raw.github.com/fweep/vim-tabber/gh-pages/vim-tabber-screenshot.png)
 
-NOTE
-----
-
-I've been sitting on this plugin for months, with the intention of
-cleaning up the code, testing it with MacVim and other variants
-(particularly gvim), and breaking the reliance on the (now-deprecated)
-[vim-powerline](https://github.com/Lokaltog/vim-powerline) plugin.  I
-haven't had the time, though, and the plugin already does what I want
-well enough that I haven't been motivated.
-
-So I'm making the repository public in the hope that others will find it
-useful.  If so, I'd be happy to make small changes on request.
-
 Features
 --------
 
@@ -199,7 +186,9 @@ Bind \<C-e\> to switch to the last active tab:
 Compatibility
 -------------
 
-Tested with Vim 7.3.
+Tested with Vim 7.3 and 7.4 in terminal mode. Works with MacVim 7.3 and 7.4 but _only in
+terminal mode_ (when MacVim is invoked as `vim` via a symlink).
+GUI-mode Vim doesn't use `tabline` and is currently unsupported.
 
 Limitations
 -----------
