@@ -4,7 +4,7 @@
 if exists('g:loaded_tabber') || &cp || v:version < 700
   finish
 endif
-let g:loaded_fweep_tabber = 1
+let g:loaded_tabber = 1
 
 function! s:SetOptDefault(opt, val)
   "Taken from Tim Pope's rails.vim.

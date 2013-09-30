@@ -72,11 +72,19 @@ function! s:initialize_commands() "{{{2
   command! -range=0 -nargs=? TabberSwap               call <SID>TabberSwap(<count>, <f-args>)
 endfunction
 
+function! s:initialize_autocmds() "{{{2
+  augroup tabber
+    autocmd!
+    autocmd TabLeave * call s:save_active_tab()
+  augroup END
+endfunction
+
 function! s:initialize() "{{{2
   let s:last_active_tab = 1
   call s:initialize_commands()
   call s:initialize_highlights()
   call s:initialize_dividers()
+  call s:initialize_autocmds()
 endfunction
 
 " Exported Functions {{{1
@@ -371,7 +379,6 @@ function! s:create_tab(new_tab) "{{{2
 endfunction
 
 function! s:select_tab(tab) "{{{2
-  call s:save_active_tab()
   execute 'tabnext ' . a:tab
 endfunction
 
