@@ -28,6 +28,15 @@ Add this to your .vimrc:
 
     set tabline=%!tabber#TabLine()
 
+### MacVim/GUI Mode
+
+If using GUI mode (e.g. MacVim), you also need:
+
+    set guioptions-=e
+
+This will use a traditional terminal Vim tabline rather than real GUI
+widget tabs.
+
 Setting Labels
 --------------
 
@@ -186,9 +195,10 @@ Bind \<C-e\> to switch to the last active tab:
 Compatibility
 -------------
 
-Tested with Vim 7.3 and 7.4 in terminal mode. Works with MacVim 7.3 and 7.4 but _only in
-terminal mode_ (when MacVim is invoked as `vim` via a symlink).
-GUI-mode Vim doesn't use `tabline` and is currently unsupported.
+Tested with Vim and MacVim versions 7.3 and 7.4 in terminal mode, and
+MacVim GUI mode with `set guioptions-=e`. GUI mode with UI widget tabs
+(the default) does not work, as it does not invoke the `tabline`
+mechanism.
 
 Limitations
 -----------

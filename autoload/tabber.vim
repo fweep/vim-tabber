@@ -16,9 +16,9 @@ function! s:initialize_highlights() "{{{2
     return
   endif
 
-  execute 'highlight TabLine cterm=NONE ctermfg=244 ctermbg=235 guifg=#808080 guibg=#262626'
-  execute 'highlight TabLineSel cterm=reverse ctermfg=239 ctermbg=187 guifg=#4e4e4e guibg=#d7d7af'
-  execute 'highlight TabLineFill cterm=NONE ctermfg=244 ctermbg=235 guifg=#808080 guibg=#262626'
+  execute 'highlight TabLine cterm=NONE ctermfg=244 ctermbg=235 gui=NONE guifg=#808080 guibg=#262626'
+  execute 'highlight TabLineSel cterm=reverse ctermfg=239 ctermbg=187 gui=reverse guifg=#4e4e4e guibg=#d7d7af'
+  execute 'highlight TabLineFill cterm=NONE ctermfg=244 ctermbg=235 gui=NONE guifg=#808080 guibg=#262626'
 
   "TODO: derive these from TabLine
   execute 'highlight TabLineTabNumber ctermbg=235 ctermfg=33 guibg=#262626 guifg=#0087ff'
