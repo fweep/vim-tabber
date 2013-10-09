@@ -22,7 +22,7 @@ Installation
 Install via [pathogen.vim](https://github.com/tpope/vim-pathogen):
 
     cd ~/.vim/bundle
-    git clone git://github.com/fweep/vim-tabber.git
+    git clone https://github.com/fweep/vim-tabber.git
 
 Add this to your .vimrc:
 
@@ -40,7 +40,7 @@ widget tabs.
 Setting Labels
 --------------
 
-Tab labels default to pathshorten() on the active buffer name.  If the
+Tab labels default to `pathshorten()` on the active buffer name.  If the
 buffer has no name, "\[No Name\]" is displayed.  You can override the
 default label for a tab and set your own.  The tab will use your label
 until you clear it or close the tab.
@@ -166,7 +166,7 @@ Wrap tabs when shifting:
     let g:tabber_wrap_when_shifting = 1
 
 Control what's shown in unlabeled tabs.  If the current directory is
-~jim and ~/.vim/bundle/vim-tabber/README.md is loaded in the active
+`~jim` and `~/.vim/bundle/vim-tabber/README.md` is loaded in the active
 window for the tab:
 
     let g:tabber_filename_style = 'pathshorten' " .v/b/v/README.md
@@ -183,12 +183,12 @@ Use different divider styles:
 Example Bindings
 ----------------
 
-Bind \<C-t\> to open a new tab at the end of the tab list with the label
+Bind <kbd>Ctrl</kbd><kbd>t</kbd> to open a new tab at the end of the tab list with the label
 "Scratch":
 
     nnoremap <C-t> :999TabberNew Scratch<CR>
 
-Bind \<C-e\> to switch to the last active tab:
+Bind <kbd>Ctrl</kbd><kbd>e</kbd> to switch to the last active tab:
 
     nnoremap <C-e> :TabberSelectLastActive<CR>
 
@@ -209,12 +209,12 @@ configured default labels, they will be applied.
 How I Use It
 ------------
 
-These mappings mask the Vim default \<C-t\> for navigating the tag
+These mappings mask the Vim default <kbd>Ctrl</kbd><kbd>t</kbd> for navigating the tag
 stack, and possibly conflict with other bindings you may have, but
 should show what can be done with the plugin.  The maps allow me to move
 tabs around with a count prefix without leaving normal mode.
 
-In ~/.vimrc:
+In `~/.vimrc`:
 
     if filereadable('.vimrc-project')
       source .vimrc-project
@@ -242,7 +242,7 @@ In ~/.vimrc:
     nnoremap <silent> <Leader>8        :tabnext 8<CR>
     nnoremap <silent> <Leader>9        :tabnext 9<CR>
 
-In .vimrc-project in a Rails app root directory:
+In `.vimrc-project` in a Rails app root directory:
 
     let g:tabber_predefined_labels = { 1: 'Controllers', 2: 'Views', 3: 'Models' }
 
