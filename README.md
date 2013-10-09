@@ -183,12 +183,12 @@ Use different divider styles:
 Example Bindings
 ----------------
 
-Bind <kbd>Ctrl</kbd><kbd>t</kbd> to open a new tab at the end of the tab list with the label
+Bind <kbd>Ctrl</kbd>-<kbd>t</kbd> to open a new tab at the end of the tab list with the label
 "Scratch":
 
     nnoremap <C-t> :999TabberNew Scratch<CR>
 
-Bind <kbd>Ctrl</kbd><kbd>e</kbd> to switch to the last active tab:
+Bind <kbd>Ctrl</kbd>-<kbd>e</kbd> to switch to the last active tab:
 
     nnoremap <C-e> :TabberSelectLastActive<CR>
 
@@ -209,7 +209,7 @@ configured default labels, they will be applied.
 How I Use It
 ------------
 
-These mappings mask the Vim default <kbd>Ctrl</kbd><kbd>t</kbd> for navigating the tag
+These mappings mask the Vim default <kbd>Ctrl</kbd>-<kbd>t</kbd> for navigating the tag
 stack, and possibly conflict with other bindings you may have, but
 should show what can be done with the plugin.  The maps allow me to move
 tabs around with a count prefix without leaving normal mode.
