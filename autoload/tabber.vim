@@ -50,7 +50,7 @@ function! s:initialize_dividers() "{{{2
   let s:divider_symbols = {
         \ 'compatible': { 'dividers': [ '', [0x2502], '', [0x2502] ] },
         \ 'unicode': { 'dividers': [[0x25b6], [0x276f], [0x25c0], [0x276e]] },
-        \ 'fancy': { 'dividers': [[0x2b80], [0x2b81], [0x2b82], [0x2b83]] }
+        \ 'fancy': { 'dividers': [[0xe0b0], [0xe0b1], [0xe0b2], [0xe0b3]] }
         \ }
   let s:divider_characters = s:divider_symbols[g:tabber_divider_style].dividers
   let s:divider_character_hard = s:ParseChars(deepcopy(s:divider_characters[0]))
